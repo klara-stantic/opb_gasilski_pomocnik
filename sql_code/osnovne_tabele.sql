@@ -1,23 +1,25 @@
 -- Active: 1681832541458@@baza.fmf.uni-lj.si@5432@sem2023_tinef@public
-
 CREATE TABLE funkcije (
-    naziv text not null primary key
+    id_funkcija serial PRIMARY KEY, 
+    naziv text not null
 );
 
 Create table cin (
-    cin text not null primary key
+    id_cin serial PRIMARY KEY, 
+    cin text not null
 );
 
 CREATE TABLE clani (
     emso integer primary key,
     ime text not null, 
     priimek text not null,
-    funkcija text not null REFERENCES funkcije(naziv), 
-    cin text not null REFERENCES cin(cin)
+    funkcija integer not null REFERENCES funkcije(id_funkcija), 
+    cin integer not null REFERENCES cin(id_cin)
 );
 
 create table tip_vozila (
-    tip_vozila text not null PRIMARY KEY
+    id_vozilo serial PRIMARY KEY, 
+    tip_vozila text not null
 );
 
 create table kategorija_vozniskega_dovoljenja (
@@ -26,20 +28,21 @@ create table kategorija_vozniskega_dovoljenja (
 
 create table vozila (
     registrska_st text not null PRIMARY KEY,
-    tip_vozila text not null REFERENCES tip_vozila(tip_vozila),
+    tip_vozila integer not null REFERENCES tip_vozila(id_vozilo),
     potreben_izpit text not null REFERENCES kategorija_vozniskega_dovoljenja(kategorija),
     st_potnikov INTEGER NOT NULL
 );
 
 create table tip_intervencije (
-    tip text not null primary key
+    id_tipa_intervencije serial PRIMARY KEY, 
+    tip text not null
 );
 
 CREATE TABLE intervencija (
     id Serial PRIMARY KEY,
     opis TEXT,
     datum date not null,
-    tip text not null REFERENCES tip_intervencije(tip)
+    tip integer not null REFERENCES tip_intervencije(id_tipa_intervencije)
 );
 
 create Table osebna_oprema (
@@ -52,9 +55,14 @@ create table skupna_oprema (
     tip_opreme text not null
 );
 
+create table tip_tecaja (
+    id_tecaj serial PRIMARY KEY, 
+    naziv_tecaja text not null 
+);
+
 create table tecaji (
     id Serial PRIMARY KEY,
-    naziv_tecaja text not null,
+    naziv_tecaja INTEGER not null REFERENCES tip_tecaja(id_tecaj),
     datum date not null, 
     organizator text not null, 
     cena FLOAT
@@ -64,19 +72,20 @@ create table vaja (
     id Serial PRIMARY KEY,
     datum date not null, 
     obvezna BOOLEAN not null, 
-    tip_vaje text not null REFERENCES tip_intervencije(tip), 
+    tip_vaje INTEGER not null REFERENCES tip_intervencije(id_tipa_intervencije), 
     vodja integer REFERENCES clani(emso)
 );
 
 create table tipi_tekmovanj (
-    tip text not null PRIMARY KEY
+    id_tip serial PRIMARY KEY, 
+    tip text not null
 );
 
 create table tekmovanje (
     id serial PRIMARY key, 
     datum date not null, 
     lokacija text not null, 
-    tip_tekmovanja text not null REFERENCES tipi_tekmovanj(tip)
+    tip_tekmovanja INTEGER not null REFERENCES tipi_tekmovanj(id_tip)
 );
 
 create table ekipa (
