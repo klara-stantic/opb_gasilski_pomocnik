@@ -56,3 +56,9 @@ create table potrebuje_tecaj (
     id_opreme integer not null REFERENCES skupna_oprema(id),
     id_tecaja integer not null REFERENCES tecaji(id)
 );
+
+create table skrbnik_vozila (
+    id SERIAL PRIMARY KEY, 
+    emso_clana integer not null REFERENCES clani(emso), 
+    registracija_vozila text not null REFERENCES vozila(registrska_st)
+);
