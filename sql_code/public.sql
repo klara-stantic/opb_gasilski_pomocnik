@@ -23,3 +23,6 @@ INSERT into cin (cin) values ('Višji gasilski častnik');
 INSERT into cin (cin) values ('Višji gasilski častnik II. stopnje');
 INSERT into cin (cin) values ('Visoki gasilski častnik');
 
+INSERT into osebna_oprema (tip_opreme) values ('Čelada za tehnične intervencije');
+Insert into clani (emso, ime, priimek, funkcija, cin) values (0000707500007, 'Janez', 'Bond', 'Veteran', 'Gasilski častnik');
+
