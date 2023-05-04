@@ -19,7 +19,8 @@ CREATE TABLE clan (
 
 CREATE TABLE tip_vozila (
     id_vozilo SERIAL PRIMARY KEY, 
-    tip_vozila TEXT NOT NULL
+    tip_vozila TEXT NOT NULL, 
+    opis_tipa TEXT NOT NULL
 );
 
 CREATE TABLE kategorija_vozniskega_dovoljenja (
