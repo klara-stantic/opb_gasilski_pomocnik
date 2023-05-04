@@ -1,8 +1,4 @@
 -- Active: 1681832541458@@baza.fmf.uni-lj.si@5432@sem2023_tinef@public
-DROP TABLE IF EXISTS opravljeni_tecaji, del_ekipe, prisotnost_na_intervencijah, prisotnost_na_vajah, vozila_na_intervencijah, ekipe_na_tekmovanjih, lastnistva_opreme, oprema_v_vozilih, skrbnik_vozila, potrebuje_tecaj;
-DROP TABLE IF EXISTS osebna_oprema, skupna_oprema, ekipa, tekmovanje, tehnicni_pregledi_vozil, clan, vaja, intervencija, tecaj;
-DROP TABLE IF EXISTS funkcija, cin, kategorija_vozniskega_dovoljenja, tip_vozila, tip_intervencije, tip_tecaja, tip_tekmovanja;
-
 CREATE TABLE funkcija (
     id_funkcija SERIAL PRIMARY KEY, 
     naziv TEXT NOT NULL
