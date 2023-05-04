@@ -30,7 +30,7 @@ CREATE TABLE kategorija_vozniskega_dovoljenja (
 CREATE TABLE vozilo (
     registrska_st TEXT NOT NULL PRIMARY KEY,
     tip_vozila INTEGER NOT NULL REFERENCES tip_vozila(id_vozilo),
-    potreben_izpit TEXT NOT NULL REFERENCES kategorija_vozniskega_dovoljenja(id_kategorije),
+    potreben_izpit INTEGER NOT NULL REFERENCES kategorija_vozniskega_dovoljenja(id_kategorije),
     st_potnikov INTEGER NOT NULL
 );
 
