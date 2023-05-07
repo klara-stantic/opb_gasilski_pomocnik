@@ -1,0 +1,40 @@
+tip_vozila, opis_tipa
+PV-1,Manjše poveljniško vozilo 
+PV-2,Večje poveljniško vozilo 
+GVZ-1,Gasilsko vozilo zveze 
+GVRZ,Gasilsko vozilo za radijske zveze 
+GV-1,Manjše gasilsko vozilo
+GVV-1,Manjše gasilsko vozilo z vodo 
+GVV-2,Večje gasilsko vozilo z vodo 
+GVC-1,Gasilsko vozilo s cisterno 
+GVC-2,Gasilsko vozilo s cisterno 
+GVC-3,Gasilsko vozilo s cisterno 
+GVS-1000,Gasilsko vozilo s prahom
+GVS-2000,Gasilsko vozilo s prahom 
+GVSV,Gasilsko vozilo s prahom in vodo 
+ZD/TD,Gasilsko zgibno ali teleskopsko dvigalo 
+ALK,Gasilska avto lestev s košaro 
+HTRV,Hitro tehnično reševalno vozilo 
+TRV,Tehnično reševalno vozilo 
+OVNS,Orodno vozilo za posredovanje pri nevarnih snoveh 
+OVRV,Orodno vozilo za reševanje na vodi 
+GVGP-1,Manjše gasilsko vozilo za gašenje gozdnih požarov 
+GVGP-2,Večje gasilsko vozilo za gašenje gozdnih požarov
+GCGP-1,Manjša gasilska cisterna za gozdne požare 
+GCGP-2,Srednja gasilska cisterna za gozdne požare 
+GCGP-3,Velika gasilska cisterna za gozdne požare 
+GVM-1,Gasilsko vozilo za prevoz moštva 
+VGV,Večnamensko gasilsko vozilo
+GVL-1,Manjše gasilsko vozilo za logistiko 
+GVL-2,Večje gasilsko vozilo za logistiko 
+GTV,Gasilsko tovorno vozilo 
+GVK,Gasilsko vozilo za prevoz kontejnerjev 
+GRČ-1,Manjši gasilski reševalni čoln 
+GRČ-2,Srednji gasilski reševalni čoln 
+VGČ,Večnamenski gasilski čoln 
+PMB,Priklopnik s prenosno motorno brizgalno 
+PR,Priklopnik za razsvetljavo 
+PS,Priklopnik za gasilni prah 
+PČ,Priklopnik za reševalni čoln 
+PL,Priklopnik za logistiko 
+PVT,Priklopnik za visokotlačno črpalko 
