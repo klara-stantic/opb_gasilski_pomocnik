@@ -18,3 +18,5 @@ baza = psycopg2.connect(conn_string)
 
 # Poženemo strežnik
 run(host='localhost', port=8080, reloader=True) 
+
+## vaja git hahahaha
