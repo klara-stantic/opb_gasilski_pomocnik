@@ -5,7 +5,7 @@ import psycopg2
 import csv
 
 # datoteka za bazo
-baza_filename = "gasilci.db"
+baza_filename="gasilci.db"
 
 # podatki za dostop do postgreSQL baze
 from auth import *
@@ -33,7 +33,7 @@ def uvoziCSV(cur, tabela):
 with psycopg2.connect(conn_string) as baza:
     cur = baza.cursor()
     cur.execute("DROP TABLE IF EXISTS opravljeni_tecaji, del_ekipe, prisotnost_na_intervencijah, prisotnost_na_vajah, vozila_na_intervencijah, ekipe_na_tekmovanjih, lastnistva_opreme, oprema_v_vozilih, skrbnik_vozila, potrebuje_tecaj CASCADE")
-    cur.execute("DROP TABLE IF EXISTS osebna_oprema, skupna_oprema, ekipa, tekmovanje, tehnicni_pregledi_vozil, clan, vaja, intervencija, tecaj CASCADE")
+    cur.execute("DROP TABLE IF EXISTS osebna_oprema, skupna_oprema, ekipa, tekmovanje, tehnicni_pregledi_vozil, clan, vaja, intervencija, vozilo, tecaj CASCADE")
     cur.execute("DROP TABLE IF EXISTS funkcija, cin, kategorija_vozniskega_dovoljenja, tip_vozila, tip_intervencije, tip_tecaja, tip_tekmovanja CASCADE")
     uvoziSQL(cur, "sql_code/osnovne_tabele.sql")
     uvoziSQL(cur, "sql_code/relacije.sql")
