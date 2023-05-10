@@ -128,5 +128,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-
-auth.py 
+py_code/auth.py
