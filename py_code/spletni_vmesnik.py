@@ -9,6 +9,7 @@ conn_string = "host = '{0}' dbname = '{1}' user = '{2}' password = '{3}'".format
 
 @get('/')
 def osnovna_stran():
+    cur.
     return template('osnovna_stran.html')
        
     
