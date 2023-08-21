@@ -14,7 +14,8 @@ CREATE TABLE clan (
     ime TEXT NOT NULL, 
     priimek TEXT NOT NULL,
     funkcija INTEGER NOT NULL REFERENCES funkcija(id_funkcija), 
-    cin INTEGER NOT NULL REFERENCES cin(id_cin)
+    cin INTEGER NOT NULL REFERENCES cin(id_cin),
+    zdravniski DATE
 );
 
 CREATE TABLE tip_vozila (
