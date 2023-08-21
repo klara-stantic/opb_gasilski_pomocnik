@@ -1,7 +1,16 @@
 # Struktura spletne aplikacije
 from bottle import *
-import psycopg2
 from auth import *
+
+import os
+
+import psycopg2, psycopg2.extensions, psycopg2.extras
+psycopg2.extensions.register_type(psycopg2.extensions.UNICODE) # Znebimo se problemov s šumniki
+
+#PRIVZETE NASTAVITVE 
+SERVER_PORT = os.environ.get('BOTTLE_PORT', 8080)
+RELOADER = os.environ.get('BOTTLE_RELOADER', True)
+DB_PORT = os.environ.get('POSTGRES_PORT', 5432)
 
 # Database dostop
 conn_string = "host = '{0}' dbname = '{1}' user = '{2}' password = '{3}'".format(host, dbname, user, password)
