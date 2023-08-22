@@ -462,9 +462,9 @@ class Vaja:
 class Tekomvanje:
 
     id: int= field(init=False)
-    datum: date = field(metadata={"format": "date"}, default=None)
     lokacija: str
     tip_tekmovanja: int
+    datum: date = field(metadata={"format": "date"}, default=None)
 
     def __str__(self):
         niz = f"tekomvanje tipa {self.tip_tekmovanja} dne {self.datum} v  {self.lokacija}"
@@ -498,8 +498,8 @@ class Tekomvanje:
         cur = baza.cursor()
         
        #SQL podatki
-        sql_niz = "INSERT INTO tekmovanje (datum,lokacija,tip_tekmovanja) VALUES (%s, %s, %s);"
-        values = (self.datum,self.lokacija,self.tip_tekmovanja)
+        sql_niz = "INSERT INTO tekmovanje (lokacija,tip_tekmovanja,datum) VALUES (%s, %s, %s);"
+        values = (self.lokacija,self.tip_tekmovanja,self.datum)
         
         try:
             cur.execute(sql_niz, values)

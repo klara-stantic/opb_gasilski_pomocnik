@@ -88,10 +88,10 @@ CREATE TABLE tip_tekmovanja (
 );
 
 CREATE TABLE tekmovanje (
-    id SERIAL PRIMARY key, 
-    datum DATE NOT NULL, 
+    id SERIAL PRIMARY key,  
     lokacija TEXT NOT NULL, 
-    tip_tekmovanja INTEGER NOT NULL REFERENCES tip_tekmovanja(id_tip)
+    tip_tekmovanja INTEGER NOT NULL REFERENCES tip_tekmovanja(id_tip),
+    datum DATE NOT NULL
 );
 
 CREATE TABLE ekipa (

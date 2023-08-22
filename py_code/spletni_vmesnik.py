@@ -304,7 +304,7 @@ def post_dodaj_tekmovanje():
             cur = baza.cursor()
             tip_id = cur.execute(f"""SELECT id_tip FROM tip_tekmovanja WHERE tip = %s""",[tip])
             tip_id = cur.fetchall()
-    nov = Tekomvanje(datum,lokacija,tip_id[0][0])
+    nov = Tekomvanje(lokacija,tip_id[0][0],datum)
     nov.dodaj_tekmovanje()
     redirect('/tekmovanja/')
 
