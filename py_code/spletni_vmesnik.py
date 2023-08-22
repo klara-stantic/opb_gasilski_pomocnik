@@ -212,9 +212,9 @@ def post_dodaj_int():
 def dodaj_clane_int():
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()
-        clani = cur.execute("""SELECT * FROM clan ORDER BY priimek,ime WHERE aktiven=true""")
+        clani = cur.execute("""SELECT * FROM clan WHERE aktiven=true ORDER BY priimek,ime """)
         clani = cur.fetchall()
-        vozila = cur.execute("""SELECT * FROM vozilo ORDER BY tip_vozila""")
+        vozila = cur.execute("""SELECT * FROM vozilo WHERE aktivno=true ORDER BY tip_vozila """)
         vozila = cur.fetchall()
         id_int = cur.execute("""SELECT id FROM intervencija""")
         id_int = cur.fetchall()
@@ -227,9 +227,9 @@ def post():
     id_intervencije = request.forms.getunicode('id_int')
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()
-        clani = cur.execute("""SELECT emso FROM clan ORDER BY priimek,ime""")
+        clani = cur.execute("""SELECT emso FROM clan WHERE aktiven=true ORDER BY priimek,ime """)
         clani = cur.fetchall()
-        vozila = cur.execute("""SELECT * FROM vozilo ORDER BY tip_vozila""")
+        vozila = cur.execute("""SELECT * FROM vozilo WHERE aktivno=true ORDER BY tip_vozila """)
         vozila = cur.fetchall()
     za_dodat_clane = []
     za_dodat_vozila = []
