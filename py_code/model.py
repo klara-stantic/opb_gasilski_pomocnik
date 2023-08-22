@@ -75,21 +75,19 @@ class Clan:
             baza.close()
             return "Napaka"
             
-    @staticmethod
-    def odstrani_clana(emso: int):
+    def odstrani_clana(self):
         #Ustvarjanje povezave
         baza = psycopg2.connect(conn_string)
         cur = baza.cursor()
 
-        sql_niz = f"DELETE FROM clan WHERE emso = {emso}"
+        sql_niz = f"DELETE FROM clan WHERE emso = {self.emso}"
         cur.execute(sql_niz)
     
         baza.commit()
         cur.close()
         baza.close()
 
-    @staticmethod
-    def popravi_clana(emso, novo_ime=None, nov_priimek=None, nova_funkcija=None, nov_cin=None, nov_zd=None):
+    def popravi_clana(self, novo_ime=None, nov_priimek=None, nova_funkcija=None, nov_cin=None, nov_zd=None):
         # Filter
         if not novo_ime and not nov_cin and not nov_priimek and not nov_zd and not nova_funkcija:
             return "Ni zahtevanih sprememb. Član se ni spremenil."
@@ -122,10 +120,10 @@ class Clan:
             values.append(nov_zd)
 
         sql_niz = sql_niz.rstrip(',') + " WHERE emso = %s;"
-        values.append(emso)
+        values.append(self.emso)
 
         cur.execute(sql_niz, tuple(values))
-        print(f"Popravljen član z emšo: {emso}")
+        print(f"Popravljen član z emšo: {self.emso}")
     
         baza.commit()
         cur.close()
