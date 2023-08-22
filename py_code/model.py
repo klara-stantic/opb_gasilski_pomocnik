@@ -326,52 +326,58 @@ class Intervencija:
             cur.close()
             baza.close()
             return "Napaka"
-            
-    def odstrani_intervencijo(self):
+        
+
+    ####### mogoče bi blo za ločit sql stavke alpa jih dodelat zaradi pravilnosti.
+    @staticmethod        
+    def odstrani_intervencijo(id):
         #Ustvarjanje povezave
         baza = psycopg2.connect(conn_string)
         cur = baza.cursor()
-
-        sql_niz = f"DELETE FROM intervencija WHERE id = {self.id}"
+        cur.execute(f"DELETE FROM prisotnost_na_intervencijah WHERE id_intervencije = {id}")
+        cur.execute(f"DELETE FROM vozila_na_intervencijah WHERE id_intervencije = {id}")
+        sql_niz = f"DELETE FROM intervencija WHERE id = {id}"
         cur.execute(sql_niz)
     
         baza.commit()
         cur.close()
         baza.close()
+        return "Done"
 
-    def popravi_intervencijo(self, nov_opis=None, nov_datum=None, nov_tip=None):
-        # Filter
-        if not nov_opis and not nov_datum and not nov_tip:
-            return "Ni zahtevanih sprememb. Član se ni spremenil."
+    # NIMAMO ZA POPRAVIT INTERVENCIJE
+    # def popravi_intervencijo(self, nov_opis=None, nov_datum=None, nov_tip=None):
+    #     # Filter
+    #     if not nov_opis and not nov_datum and not nov_tip:
+    #         return "Ni zahtevanih sprememb. Intervencija se ni spremenil."
         
-        # Ustvarjanje povezave
-        baza = psycopg2.connect(conn_string)
-        cur = baza.cursor()
+    #     # Ustvarjanje povezave
+    #     baza = psycopg2.connect(conn_string)
+    #     cur = baza.cursor()
         
-        sql_niz = "UPDATE clan SET"
-        values = []
+    #     sql_niz = "UPDATE clan SET"
+    #     values = []
 
-        if nov_opis:
-            sql_niz += " opis = %s,"
-            values.append(nov_opis)
+    #     if nov_opis:
+    #         sql_niz += " opis = %s,"
+    #         values.append(nov_opis)
         
-        if nov_tip:
-            sql_niz += " tip = %s,"
-            values.append(nov_tip)
+    #     if nov_tip:
+    #         sql_niz += " tip = %s,"
+    #         values.append(nov_tip)
             
-        if nov_datum:
-            sql_niz += " datum = %s,"
-            values.append(nov_datum)
+    #     if nov_datum:
+    #         sql_niz += " datum = %s,"
+    #         values.append(nov_datum)
 
-        sql_niz = sql_niz.rstrip(',') + " WHERE id = %s;"
-        values.append(self.id)
+    #     sql_niz = sql_niz.rstrip(',') + " WHERE id = %s;"
+    #     values.append(self.id)
 
-        cur.execute(sql_niz, tuple(values))
-        print(f"Popravljena intervencija z id: {self.id}")
+    #     cur.execute(sql_niz, tuple(values))
+    #     print(f"Popravljena intervencija z id: {self.id}")
     
-        baza.commit()
-        cur.close()
-        baza.close()
+    #     baza.commit()
+    #     cur.close()
+    #     baza.close()
     
     @staticmethod
     def dodaj_clana_intervenciji(id_intervencije_za_dodat_clane,emso_clan_na_intervenciji):
@@ -380,8 +386,11 @@ class Intervencija:
             try:
                 sql_niz_za_dodajanje_posameznega_clana = "INSERT into prisotnost_na_intervencijah ( id_intervencije,emso_prisotnega) VALUES (%s, %s)"
                 cur.execute(sql_niz_za_dodajanje_posameznega_clana,(id_intervencije_za_dodat_clane,emso_clan_na_intervenciji))
+                baza.commit()
+                
                 return "Shranjeno"
             except ValueError:
+                
                 return "Napaka"
             
     @staticmethod
@@ -391,39 +400,17 @@ class Intervencija:
             try:
                 sql_niz_za_dodajanje_posameznega_vozila = "INSERT into vozila_na_intervencijah (id_intervencije,registracija_vozila) VALUES (%s, %s)"
                 cur.execute(sql_niz_za_dodajanje_posameznega_vozila,(id_intervencije_za_dodat_vozilo,reg_vozila_na_intervenciji))
+                baza.commit()
+                
                 return "Shranjeno"
             except ValueError:
+                
                 return "Napaka"
 
 
 ###############################################################################
 # VAJE
 ###############################################################################
-
-
-
-    @staticmethod
-    def dodaj_clana_intervenciji(id_intervencije_za_dodat_clane,emso_clan_na_intervenciji):
-        with psycopg2.connect(conn_string) as baza:
-            cur = baza.cursor()
-            try:
-                sql_niz_za_dodajanje_posameznega_clana = "INSERT into prisotnost_na_intervencijah ( id_intervencije,emso_prisotnega) VALUES (%s, %s)"
-                cur.execute(sql_niz_za_dodajanje_posameznega_clana,(id_intervencije_za_dodat_clane,emso_clan_na_intervenciji))
-                return "Shranjeno"
-            except ValueError:
-                return "Napaka"
-            
-    @staticmethod
-    def dodaj_vozilo_intervenciji(id_intervencije_za_dodat_vozilo,reg_vozila_na_intervenciji):
-        with psycopg2.connect(conn_string) as baza:
-            cur = baza.cursor()
-            try:
-                sql_niz_za_dodajanje_posameznega_vozila = "INSERT into vozila_na_intervencijah (id_intervencije,registracija_vozila) VALUES (%s, %s)"
-                cur.execute(sql_niz_za_dodajanje_posameznega_vozila,(id_intervencije_za_dodat_vozilo,reg_vozila_na_intervenciji))
-                return "Shranjeno"
-            except ValueError:
-                return "Napaka"
-
 
 class Vaja:
     def __init__(self,datum,obvezna,tip_vaje,vodja):
@@ -462,9 +449,9 @@ class Vaja:
 class Tekomvanje:
 
     id: int= field(init=False)
-    datum: date = field(metadata={"format": "date"}, default=None)
     lokacija: str
     tip_tekmovanja: int
+    datum: date = field(metadata={"format": "date"}, default=None)
 
     def __str__(self):
         niz = f"tekomvanje tipa {self.tip_tekmovanja} dne {self.datum} v  {self.lokacija}"
@@ -498,8 +485,8 @@ class Tekomvanje:
         cur = baza.cursor()
         
        #SQL podatki
-        sql_niz = "INSERT INTO tekmovanje (datum,lokacija,tip_tekmovanja) VALUES (%s, %s, %s);"
-        values = (self.datum,self.lokacija,self.tip_tekmovanja)
+        sql_niz = "INSERT INTO tekmovanje (lokacija,tip_tekmovanja,datum) VALUES (%s, %s, %s);"
+        values = (self.lokacija,self.tip_tekmovanja,self.datum)
         
         try:
             cur.execute(sql_niz, values)

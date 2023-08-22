@@ -26,7 +26,7 @@
 </table>
 &nbsp
 <h1 class="title is-4">TEKMOVANJA</h1>
-%for id,datum,lokacija,tip in tek:
+%for id,lokacija,tip,datum in tek:
 <form method="POST" action="/odstrani_tek/">
     <div class="notification is-info">
         <button class="delete"></button>
@@ -34,4 +34,5 @@
         <b>{{tip_tek[tip - 1][1]}}</b> na lokaciji <b>{{lokacija}}</b> dne <b>{{datum}}</b>
     </div>
 </form>
+&nbsp
 %end
