@@ -54,7 +54,7 @@ class Clan:
             return None
         
     # POZOR! To ne dela z dekoratorji @staticmethod ali @classmethod
-    def dodaj_clana_v_bazo(self):
+    def dodaj_clana(self):
         #Ustvarjanje povezave
         baza = psycopg2.connect(conn_string)
         cur = baza.cursor()
@@ -137,16 +137,38 @@ class Clan:
 @dataclass_json
 @dataclass
 class Intervencija:
-    id: int
+    id: int= field(init=False) # Ker ga baza generira sama!
     opis: str 
     datum: date = field(metadata={"format": "date"})
-    tip = int
+    tip: int
 
     def __str__(self):
         return f"Intervencija ({self.tip}) dne {self.datum} z opisom: {self.opis}"
         
+    # Metoda, s katero preko id dostopamo do intervencij
     @classmethod
-    def dodaj_intervencijo_v_bazo(self):
+    def get_intervencija(cls, id):
+        # Povezava z bazo
+        conn = psycopg2.connect(conn_string)
+        cursor = conn.cursor()
+
+        query = f"SELECT * FROM intervencija WHERE id = {id};"
+        cursor.execute(query)
+        fetched_data = cursor.fetchone()
+
+        cursor.close()
+        conn.close()
+
+        if fetched_data:
+            column_names = [desc[0] for desc in cursor.description]
+            data_dict = dict(zip(column_names, fetched_data))
+            return cls(**data_dict)
+        else:
+            print("Take intervencije žal ne najdem!")
+            return None
+        
+    # POZOR! To ne dela z dekoratorji @staticmethod ali @classmethod
+    def dodaj_intervencijo(self):
         #Ustvarjanje povezave
         baza = psycopg2.connect(conn_string)
         cur = baza.cursor()
@@ -157,6 +179,10 @@ class Intervencija:
         
         try:
             cur.execute(sql_niz, values)
+            # Pridobiti želimo ustvarjen id!
+            cur.execute("SELECT currval(pg_get_serial_sequence('intervencija', 'id'));")
+            generated_id = cur.fetchone()[0]  # Generiran id
+            self.id = generated_id # Shranimo id
             baza.commit()
             cur.close()
             baza.close()
@@ -167,48 +193,47 @@ class Intervencija:
             baza.close()
             return "Napaka"
             
-    @staticmethod
-    def odstrani_intervencijo(id: int):
+    def odstrani_intervencijo(self):
         #Ustvarjanje povezave
         baza = psycopg2.connect(conn_string)
         cur = baza.cursor()
 
-        sql_niz = f"DELETE FROM intervencija WHERE id = {id}"
+        sql_niz = f"DELETE FROM intervencija WHERE id = {self.id}"
         cur.execute(sql_niz)
     
         baza.commit()
         cur.close()
         baza.close()
 
-    @staticmethod
-    def popravi_intervencijo(id: int, nov_opis=None, nov_datum=None, nov_tip=None):
+    def popravi_intervencijo(self, nov_opis=None, nov_datum=None, nov_tip=None):
         # Filter
         if not nov_opis and not nov_datum and not nov_tip:
-            return "Ni zahtevanih sprememb. Intervencija se ni spremenila."
+            return "Ni zahtevanih sprememb. Član se ni spremenil."
         
         # Ustvarjanje povezave
         baza = psycopg2.connect(conn_string)
         cur = baza.cursor()
         
-        sql_niz = "UPDATE intervencija SET"
+        sql_niz = "UPDATE clan SET"
         values = []
 
         if nov_opis:
-            sql_niz += " ime = %s,"
+            sql_niz += " opis = %s,"
             values.append(nov_opis)
         
-        if nov_datum:
-            sql_niz += " priimek = %s,"
-            values.append(nov_datum)
-            
         if nov_tip:
-            sql_niz += " funkcija = %s,"
+            sql_niz += " tip = %s,"
             values.append(nov_tip)
+            
+        if nov_datum:
+            sql_niz += " datum = %s,"
+            values.append(nov_datum)
 
         sql_niz = sql_niz.rstrip(',') + " WHERE id = %s;"
-        values.append(id)
+        values.append(self.id)
 
         cur.execute(sql_niz, tuple(values))
+        print(f"Popravljena intervencija z id: {self.id}")
     
         baza.commit()
         cur.close()
