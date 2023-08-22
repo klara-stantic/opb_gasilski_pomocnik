@@ -24,14 +24,18 @@
           </thead>
           
           <tbody>
-            %for registerska_st,tip_vozila,potreben_izpit,st_potnikov,znamka,tehnicni in vozila:
+            %for registerska_st,tip_vozila,potreben_izpit,st_potnikov,znamka,tehnicni, aktivno in vozila:
               <tr>
                 <th>{{registerska_st}}</th>
                 <th>{{tip[tip_vozila - 1 ][1]}}</th>
                 <th>{{izpit[potreben_izpit - 1][1]}}</th>
                 <th>{{st_potnikov}}</th>
                 <th>{{znamka}}</th>
-                <th>{{tehnicni}}</th>
+                %if not tehnicni:
+                  <th><b>POZOR! Ni opravljen!</b></th>
+                %else:
+                  <th>{{tehnicni}}</th>
+                %end
                 <th>
                     <form method="POST" action="/odstrani_vozilo/">
                       <input type="hidden" name="reg" value="{{registerska_st}}">
