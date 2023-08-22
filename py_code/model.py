@@ -6,8 +6,8 @@ from auth import *
 conn_string = "host = '{0}' dbname = '{1}' user = '{2}' password = '{3}'".format(host, dbname, user, password)
 
 # Ostale potrebne knjižnjice
-import pandas as pd
-from dataclasses import dataclass, field, asdict
+#import pandas as pd
+from dataclasses import dataclass, field #, asdict
 from dataclasses_json import dataclass_json
 from datetime import date
 
@@ -402,11 +402,6 @@ class Intervencija:
 
 
 
-###############################################################################
-# TEKMOVANJA
-###############################################################################
-
-
     @staticmethod
     def dodaj_clana_intervenciji(id_intervencije_za_dodat_clane,emso_clan_na_intervenciji):
         with psycopg2.connect(conn_string) as baza:
@@ -458,36 +453,80 @@ class Vaja:
             cur = baza.cursor()
             sql_niz = "DELETE FROM intervencija WHERE id = {self.id}"
             cur.execute(sql_niz)    
+###############################################################################
+# TEKMOVANJA
+###############################################################################
 
+@dataclass_json
+@dataclass
 class Tekomvanje:
-    def __init__(self,datum,lokacija,tip_tekmovanja):
-        self.datum = datum
-        self.lokacija = lokacija
-        self.tip_tekomvanja = tip_tekmovanja
+
+    id: int= field(init=False)
+    datum: date = field(metadata={"format": "date"}, default=None)
+    lokacija: str
+    tip_tekmovanja: int
 
     def __str__(self):
-        niz = f"tekomvanje tipa {self.tip_tekomvanja} dne {self.datum} v  {self.lokacija}"
+        niz = f"tekomvanje tipa {self.tip_tekmovanja} dne {self.datum} v  {self.lokacija}"
         return niz
+    # Metoda, s katero preko id dostopamo do tekmovanja
+    @classmethod
+    def get_tekmovanje(cls,id):
+        # Povezava z bazo
+        conn = psycopg2.connect(conn_string)
+        cursor = conn.cursor()
 
+        query = f"SELECT * FROM tekmovanje WHERE id = {id};"
+        cursor.execute(query)
+        fetched_data = cursor.fetchone()
+
+        cursor.close()
+        conn.close()
+
+        if fetched_data:
+            column_names = [desc[0] for desc in cursor.description]
+            data_dict = dict(zip(column_names, fetched_data))
+            return cls(**data_dict)
+        else:
+            print("Takega tekmovanja ne najdem!")
+            return None
+        
+    # POZOR! To ne dela z dekoratorji @staticmethod ali @classmethod
     def dodaj_tekmovanje(self):
-        with psycopg2.connect(conn_string) as baza:
-            cur = baza.cursor()
-            try:
-                sql_niz = "INSERT INTO tekmovanje (datum,lokacija,tip_tekmovanja) VALUES (%s, %s, %s);"
-                cur.execute(sql_niz, ( self.datum,self.lokacija, self.tip_tekomvanja))
-                ## ko dadoamo tekmovanja bi mogli potem pot self.id shranit id tekomvanja
-                ## ker jo potem potrebujemo za izpris ali bilo kaj
-                sql_niz_za_id =  "SELECT id FROM tekmovanje"
-                id = cur.execute( sql_niz_za_id)
-                id = cur.fetchall()[0]
-                self.id = id
-                return "Shranjeno"
-            except ValueError:
-                return "Napaka"
+        #Ustvarjanje povezave
+        baza = psycopg2.connect(conn_string)
+        cur = baza.cursor()
+        
+       #SQL podatki
+        sql_niz = "INSERT INTO tekmovanje (datum,lokacija,tip_tekmovanja) VALUES (%s, %s, %s);"
+        values = (self.datum,self.lokacija,self.tip_tekmovanja)
+        
+        try:
+            cur.execute(sql_niz, values)
+            # Pridobiti želimo ustvarjen id!
+            cur.execute("SELECT currval(pg_get_serial_sequence('tekmovanje', 'id'));")
+            generated_id = cur.fetchone()[0]  # Generiran id
+            self.id = generated_id # Shranimo id
+            baza.commit()
+            cur.close()
+            baza.close()
+            return "Shranjeno"
             
-    @staticmethod        
+        except ValueError:
+            cur.close()
+            baza.close()
+            return "Napaka"
+        
+    @staticmethod     
     def odstrani_tekmovanje(id):
-        with psycopg2.connect(conn_string) as baza:
-            cur = baza.cursor()
-            sql_niz = f"DELETE FROM tekmovanje WHERE id = {id}"
-            cur.execute(sql_niz)
+        #Ustvarjanje povezave
+        baza = psycopg2.connect(conn_string)
+        cur = baza.cursor()
+
+        sql_niz = f"DELETE FROM tekmovanje WHERE id = {id}"
+        cur.execute(sql_niz)
+    
+        baza.commit()
+        cur.close()
+        baza.close()
+
