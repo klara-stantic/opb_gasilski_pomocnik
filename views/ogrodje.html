@@ -6,13 +6,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gasilski pomočnik</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src="https://kit.fontawesome.com/b1b31e483a.js" crossorigin="anonymous"></script>
 </head>
 
+## to je od klarine projektne navigation bar, za pomoč 
+<body>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="container">
+          <div class="navbar-brand">
+              <span class="navbar-item" href="/">
+                  <span class="icon">
+                    <i class="fa-solid fa-fire"></i>
+                  </span>
+                  <strong>Gasilski pomočnik</strong>
+              </span>
+          </div>
 
+          <div class="navbar-end">
+              <div class="navbar-item">
+                  <div class="buttons">
+                    <button class="button is-rounded is-static">
+                        <p>Uporabnik: <strong>Uporabnisko ime</strong></p>
+                    </button>
+                  </div>
+              </div>
+          </div>
+      </div>
+      </div>
+  </nav>
+
+    <div class="tabs is-centered">
+
+      <ul>
+          <li class="is_active">
+            <a class="navbar-item" href="/">
+              <span class="icon is-small"><i class="fa-solid fa-house"></i></span>
+              <span> Domov</span>
+            </a>
+          </li>
+          <li>
+              <a href="/intervencije/">
+                  <span class="icon is-small"><i class="fa-solid fa-bolt"></i></span>
+                  <span> Intervencije</span>
+              </a>
+          </li>
+          <li>
+              <a href="/oprema/">
+                  <span class="icon is-small"><i class="fa-solid fa-helmet-safety"></i></span>
+                  <span> Oprema</span>
+              </a>
+          </li>
+          <li>
+              <a href="/tekmovanja/">
+                  <span class="icon is-small"><i class="fa-solid fa-trophy"></i></span>
+                  <span> Tekmovanja</span>
+              </a>
+          </li>
+          <li>
+              <a href="/drustvo/">
+                  <span class="icon is-small"><i class="fa-solid fa-people-roof"></i></span>
+                  <span> Društvo</span>
+              </a>
+          </li>
+      </ul>
+    </div>
+
+
+# To je preprosta koda, ki sva jo imela za predstavitev
+  <section class="section">
     <section class="section">
         {{!base}}
-    </section>
+  </section>
 </body>
 
 </html>
+
