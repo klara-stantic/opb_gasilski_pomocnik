@@ -24,14 +24,18 @@
           </thead>
           
           <tbody>
-            %for emso,ime,priimek,funkcija,cin,zdravniski in clani:
+            %for emso,ime,priimek,funkcija,cin,zdravniski, aktiven in clani:
               <tr>
                 <th>{{ime}}</th>
                 <th>{{priimek}}</th>
                 <th>{{emso}}</th>
                 <th>{{fun[funkcija - 1][1]}}</th>
                 <th>{{c[cin - 1][1]}}</th>
-                <th>{{zdravniski}}</th>
+                %if not zdravniski:
+                  <th><b>POZOR! Ni opravljen!</b></th>
+                %else:
+                  <th>{{zdravniski}}</th>
+                %end
                 <th>
                   <form method="POST" action="/odstrani_clana/">
                     <input type="hidden" name="emso" value="{{emso}}">

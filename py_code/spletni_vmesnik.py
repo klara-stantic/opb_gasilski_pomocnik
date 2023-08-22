@@ -1,7 +1,8 @@
 # Struktura spletne aplikacije
 from bottle import *
 from auth import *
-from mod import *
+from model import *
+from datetime import date 
 
 import os
 
@@ -24,7 +25,7 @@ def osnovna_stran():
 def prikaz_clanov():
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
-            clani = cur.execute("""SELECT * FROM clan""")
+            clani = cur.execute("""SELECT * FROM clan WHERE aktiven = true""")
             clani = cur.fetchall()
             fun = cur.execute("""SELECT * FROM funkcija""")
             fun = cur.fetchall()
@@ -61,9 +62,9 @@ def nov_clan_post():
     redirect('/clani/')
 
 @post('/odstrani_clana/')
-def odstrani_c():
+def odstrani_clana():
     emso = request.forms.getunicode('emso')
-    Clan.odstrani_clana(int(emso))
+    Clan.spremeni_aktivnost(int(emso))
     redirect('/clani/')
 
 @post('/preusmeritev_popravi_clan/')
@@ -102,7 +103,7 @@ def popravi_clana_dokonco():
 def prikaz_vozil():
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
-            vozila = cur.execute("""SELECT * FROM vozilo""")
+            vozila = cur.execute("""SELECT * FROM vozilo WHERE aktivno = true""")
             vozila = cur.fetchall()
             tip = cur.execute("""SELECT * FROM tip_vozila""")
             tip = cur.fetchall()
@@ -134,14 +135,14 @@ def novo_vozilo_post():
             izpit_id = cur.fetchall()
             tip_id = cur.execute(f"""SELECT id_vozilo FROM tip_vozila WHERE tip_vozila  = %s""",[tip])
             tip_id = cur.fetchall()
-    nov = Vozila(reg,tip_id[0][0],izpit_id[0][0],int(potniki),znamka,tehnicni)
+    nov = Vozilo(reg,tip_id[0][0],izpit_id[0][0],int(potniki),znamka,tehnicni)
     nov.dodaj_vozilo()
     redirect('/vozila/')
 
 @post('/odstrani_vozilo/')
-def odstrani_c():
+def odstrani_vozilo():
     reg = request.forms.getunicode('reg')
-    Vozila.odstrani_vozilo(reg)
+    Vozilo.spremeni_aktivnost(reg)
     redirect('/vozila/')
 
 @post('/preusmeritev_popravi_vozilo/')
@@ -171,7 +172,7 @@ def popravi_clana_dokonco():
             izpit_id = cur.fetchall()
             tip_id = cur.execute(f"""SELECT id_vozilo FROM tip_vozila WHERE tip_vozila  = %s""",[tip])
             tip_id = cur.fetchall()
-    Vozila.popravi_vozilo(reg,tip_id[0][0],izpit_id[0][0],int(potniki),znamka,tehnicni)
+    Vozilo.popravi_vozilo(reg,tip_id[0][0],izpit_id[0][0],int(potniki),znamka,tehnicni)
     redirect('/vozila/')
 
 #######################################################################################
@@ -203,7 +204,7 @@ def post_dodaj_int():
             cur = baza.cursor()
             tip_id = cur.execute(f"""SELECT id_tipa_intervencije FROM tip_intervencije WHERE tip  = %s""",[tip])
             tip_id = cur.fetchall()
-    nov = Intervencije(opis,datum,tip_id[0][0])
+    nov = Intervencija(opis,datum,tip_id[0][0])
     nov.dodaj_intervencijo()
     redirect('/dodaj_clane_na_int/')
 
@@ -211,7 +212,7 @@ def post_dodaj_int():
 def dodaj_clane_int():
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()
-        clani = cur.execute("""SELECT * FROM clan ORDER BY priimek,ime""")
+        clani = cur.execute("""SELECT * FROM clan ORDER BY priimek,ime WHERE aktiven=true""")
         clani = cur.fetchall()
         vozila = cur.execute("""SELECT * FROM vozilo ORDER BY tip_vozila""")
         vozila = cur.fetchall()
@@ -243,10 +244,10 @@ def post():
             za_dodat_vozila.append(reg[0])    
 
     for cl_emso in za_dodat_clane:
-        Intervencije.dodaj_clana_intervenciji(int(id_intervencije),cl_emso)
+        Intervencija.dodaj_clana_intervenciji(int(id_intervencije),cl_emso)
 
     for v_reg in za_dodat_vozila:
-        Intervencije.dodaj_vozilo_intervenciji(int(id_intervencije),v_reg)
+        Intervencija.dodaj_vozilo_intervenciji(int(id_intervencije),v_reg)
 
     redirect("/intervencije/")
 
@@ -272,7 +273,7 @@ def prikaz_intervencije():
 @route('/odstrani_int/', method='POST')
 def odstrani_intervencijo():
     id = request.forms.getunicode('id')
-    Intervencije.odstrani_intervencijo(int(id))
+    Intervencija.odstrani_intervencijo(int(id))
     redirect('/intervencije/')
       
 ##################################################################
