@@ -1,0 +1,59 @@
+% rebase('ogrodje.html')
+<style>
+  table {
+    width: 100%;
+  }
+</style>
+<form action="/">
+  <td>
+      <div class="buttons">
+          <button class="button is-info">Nazaj</button>
+        </div>
+  </td>
+</form>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>REGISTERSKA ŠTEVILKA</th>
+              <th>TIP VOZILA</th>
+              <th>POTREBEN IZPIT</th>
+              <th>ŠTEVILO POTNIKOV</th>
+              <th>ZNAMKA</th>
+              <th>ZADNJI TEHNIČNI PREGLED</th>
+            </tr>
+          </thead>
+          
+          <tbody>
+            %for registerska_st,tip_vozila,potreben_izpit,st_potnikov,znamka,tehnicni in vozila:
+              <tr>
+                <th>{{registerska_st}}</th>
+                <th>{{tip[tip_vozila - 1 ][1]}}</th>
+                <th>{{izpit[potreben_izpit - 1][1]}}</th>
+                <th>{{st_potnikov}}</th>
+                <th>{{znamka}}</th>
+                <th>{{tehnicni}}</th>
+                <th>
+                    <form method="POST" action="/odstrani_vozilo/">
+                      <input type="hidden" name="reg" value="{{registerska_st}}">
+                      <button class="button is-info">Odstrani vozilo</button>
+                    </form>
+                  </th>
+                  <th>
+                    <form method="POST" action="/preusmeritev_popravi_vozilo/">
+                      <input type="hidden" name="reg" value="{{registerska_st}}">
+                      <button class="button is-info">Popravi podatke</button>
+                    </form>
+                  </th>
+            %end
+          </tbody>   
+      <table>
+        <tr>
+          <form action="/dodaj_vozilo/">
+            <td>
+                <div class="buttons">
+                    <button class="button is-info">DODAJ VOZILO</button>
+                  </div>
+            </td>
+          </form>
+        </tr>
+      </table>

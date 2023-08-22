@@ -1,0 +1,63 @@
+%rebase('ogrodje.html')
+<form action="/clani/">
+    <td>
+        <div class="buttons">
+            <button class="button is-info">Nazaj</button>
+          </div>
+    </td>
+  </form>
+<form method="POST" action="/dodaj_clana/">
+  <div class="field">
+    <label class="label">Ime</label>
+    <div class="control">
+      <input class="input",name="ime",id="ime">
+    </div>
+  </div>
+  
+  <div class="field">
+    <label class="label">Priimek</label>
+    <div class="control">
+      <input class="input",name="priimek",id="priimek">
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Emšo</label>
+    <div class="control">
+      <input class="input",name="emso",type="number", id="emso">
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Funkcija</label>
+    <div class="control">
+      <div class="select", name="funkcija",id="funkcija">
+        <select>
+            %for f in funkcije:
+                <option>{{f[1]}}</option>
+            %end   
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Čin</label>
+    <div class="control">
+      <div class="select",name="cin",id="cin">
+        <select>
+            %for c in cin:
+                <option>{{c[1]}}</option>
+            %end    
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Zadnji zdravniški pregled</label>
+    <div class="control">
+      <input class="input",name="zd",type="date",id="zd" >
+    </div>
+  </div>
+  <button class="button is-info">dodaj člana</button>
+</form>

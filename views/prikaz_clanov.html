@@ -1,0 +1,63 @@
+% rebase('ogrodje.html')
+<style>
+  table {
+    width: 100%;
+  }
+</style>
+<form action="/">
+  <td>
+      <div class="buttons">
+          <button class="button is-info">Nazaj</button>
+        </div>
+  </td>
+</form>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>IME</th>
+              <th>PRIIMEK</th>
+              <th>EMŠO</th>
+              <th>FUNKCIJA</th>
+              <th>ČIN</th>
+              <th>ZADNJI ZDRAVNIŠKI PREGLED</th>
+            </tr>
+          </thead>
+          
+          <tbody>
+            %for emso,ime,priimek,funkcija,cin,zdravniski in clani:
+              <tr>
+                <th>{{ime}}</th>
+                <th>{{priimek}}</th>
+                <th>{{emso}}</th>
+                <th>{{fun[funkcija - 1][1]}}</th>
+                <th>{{c[cin - 1][1]}}</th>
+                <th>{{zdravniski}}</th>
+                <th>
+                  <form method="POST" action="/odstrani_clana/">
+                    <input type="hidden" name="emso" value="{{emso}}">
+                    <button class="button is-info">Odstrani člana</button>
+                  </form>
+                </th>
+                <th>
+                  <form method="POST" action="/preusmeritev_popravi_clan/">
+                    <input type="hidden" id="emso" name="emso" value="{{emso}}">
+                    <button class="button is-info">Popravi podatke</button>
+                  </form>
+                </th>
+            %end
+          </tbody>   
+      <table>
+        <tr>
+          <form action="/dodaj_clana/">
+            <td>
+                <div class="buttons">
+                    <button class="button is-info">DODAJ ČLANA</button>
+                  </div>
+            </td>
+          </form>
+        </tr>
+      </table>
+          
+
+          
+        

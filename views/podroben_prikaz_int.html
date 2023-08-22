@@ -1,0 +1,60 @@
+%rebase('ogrodje.html')
+<style>
+    table {
+      width: 100%;
+    }
+  </style>
+  <h2 class="title is-4">INTERVENCIJA</h2>
+  &nbsp
+  <table>
+  
+      <td>
+          <form action="/intervencije/">
+              <td>
+                  <div class="buttons">
+                      <button class="button is-info">Nazaj</button>
+                    </div>
+              </td>
+            </form>
+      </td>
+  </table>
+  &nbsp
+  <form method="POST" action="/dodaj_int/">
+    <div class="field">
+        <label class="label">Tip intervencije</label>
+        <div class="control">
+            <input class="input" type="text" value="{{tip_int[int[0][3]-1][1]}}" readonly>
+          </div>
+      </div>
+
+    <div class="field">
+        <label class="label">Datum</label>
+        <div class="control">
+            <input class="input" type="date" value="{{int[0][2]}}" readonly>
+        </div>
+
+    <div class="control">
+        <p><b>Opis intervencije</b></p>
+        <textarea class="textarea is-info" name="opis"  rows="10" readonly>{{int[0][1]}}</textarea>
+    </div>
+
+    <div class="columns">
+        <div class="column">
+            <h1><b>Člani na intervenciji:</b></h1>
+                %for ime,priimek in clani_na_int :
+                <ul>
+                    {{priimek}} {{ime}}
+                </ul>        
+                %end
+        </div>
+        <div class="column">
+            <h1><b>Vozila na intervenciji:</b></h1>
+            
+                %for tip,znamka in vozila_na_int:
+                    <ul>{{tip_v[tip - 1 ][1]}} {{znamka}}</ul>                  
+                %end    
+        </div>
+    
+            
+        </div>
+    </div>

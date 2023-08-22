@@ -5,7 +5,7 @@ import psycopg2
 import csv
 
 # datoteka za bazo
-baza_filename="gasilci.db"
+baza_filename="gasilcitest.db"
 
 # podatki za dostop do postgreSQL baze
 from auth import *

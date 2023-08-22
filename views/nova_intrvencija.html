@@ -1,0 +1,42 @@
+%rebase('ogrodje.html')
+<form action="/intervencije/">
+    <td>
+        <div class="buttons">
+            <button class="button is-info">Nazaj</button>
+          </div>
+    </td>
+  </form>
+  <form method="POST" action="/dodaj_int/">
+    <div class="field">
+        <label class="label">Tip intervencije</label>
+        <div class="control">
+          <div class="select">
+            <select name="tip_int">
+                %for tip in tip_int :
+                <option>{{tip[1]}}</option>
+                %end
+            </select>
+          </div>
+        </div>
+      </div>
+
+    <div class="field">
+        <label class="label">Datum</label>
+        <div class="control has-icons-left">
+            <input class="input" name="datum" type="date">
+            <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+            </span>
+    </div>
+    <div class="control">
+        <p><b>Opis intervencije</b></p>
+        <textarea class="textarea is-info" name="opis" placeholder="opiši vir" rows="15"></textarea>
+    </div>
+  
+    <div class="field is-grouped">
+        <div class="control">
+            <button class="button is-info">dodaj člane in vozila na intervenciji</button>
+        </div>
+    </div>
+    
+</form>

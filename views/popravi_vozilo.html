@@ -1,0 +1,67 @@
+%rebase('ogrodje.html')
+<form action="/vozila/">
+    <td>
+        <div class="buttons">
+            <button class="button is-info">Nazaj</button>
+          </div>
+    </td>
+  </form>
+  <form method="POST" action="/popravi_vozilo/">
+    <input type="hidden" name="reg" value="{{vozilo[0][0]}}">
+    <div class="field">
+        <label class="label">Znamka</label>
+        <div class="control has-icons-left">
+            <input class="input" name="znamka" type="text" value="{{vozilo[0][4]}}" >
+            <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+            </span>
+    </div>
+    <div class="field">
+        <label class="label">Število potnikov</label>
+        <div class="control has-icons-left">
+            <input class="input" name="st_potnikov" type="number" value="{{vozilo[0][3]}}">
+            <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+            </span>
+    </div>
+    <div class="field">
+        <label class="label">Zadnji tehnični pregled</label>
+        <div class="control has-icons-left">
+            <input class="input" name="tehnicni" type="date" value="{{vozilo[0][5]}}">
+            <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+            </span>
+    </div>
+
+    <div class="field">
+        <label class="label">Tip vozila</label>
+        <div class="control">
+          <div class="select">
+            <select name="tip_vozila" value="{{vozilo[0][1]}}">
+                %for t in tip_v :
+                <option>{{t[1]}}</option>
+                %end
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">Potreben izpit</label>
+        <div class="control">
+          <div class="select">
+            <select name="izpit" value="{{vozilo[0][2]}}">
+                %for i in izpit :
+                <option>{{i[1]}}</option>
+                %end
+            </select>
+          </div>
+        </div>
+      </div>
+    <hr> 
+    <div class="field is-grouped">
+        <div class="control">
+            <button class="button is-info">popravi</button>
+        </div>
+    </div>
+    
+</form>

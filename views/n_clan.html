@@ -1,0 +1,77 @@
+%rebase('ogrodje.html')
+<form action="/clani/">
+    <td>
+        <div class="buttons">
+            <button class="button is-info">Nazaj</button>
+          </div>
+    </td>
+  </form>
+  <form method="POST">
+    <div class="field">
+        <label class="label"> ime</label>
+        <div class="control has-icons-left">
+            <input class="input" name="ime" type="text" >
+            <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+            </span>
+    </div>
+    <div class="field">
+        <label class="label">priimek</label>
+        <div class="control has-icons-left">
+            <input class="input" name="priimek" type="text" >
+            <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+            </span>
+    </div>
+    <div class="field">
+        <label class="label">emso</label>
+        <div class="control has-icons-left">
+            <input class="input" name="emso" type="number">
+            <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+            </span>
+    </div>
+    <div class="field">
+        <label class="label">Funkcija</label>
+        <div class="control">
+          <div class="select">
+            <select name="funkcija">
+                %for f in funkcije:
+                <option>{{f[1]}}</option>
+                %end
+            </select>
+          </div>
+        </div>
+    </div>
+
+    <div class="field">
+        <label class="label">Čin</label>
+        <div class="control">
+          <div class="select">
+            <select name="cin">
+                %for c in cin:
+                <option>{{c[1]}}</option>
+                %end
+            </select>
+          </div>
+        </div>
+    </div>
+
+    <div class="field">
+        <label class="label">Zadnji zdravniški pregled</label>
+        <div class="control has-icons-left">
+            <input class="input" name="zd" type="date">
+            <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+            </span>
+    </div>
+
+    <hr> 
+    
+    <div class="field is-grouped">
+        <div class="control">
+            <button class="button is-info">dodaj člana</button>
+        </div>
+    </div>
+    
+</form>

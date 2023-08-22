@@ -1,0 +1,68 @@
+%rebase('ogrodje.html')
+<form action="/vaje/">
+    <td>
+        <div class="buttons">
+            <button class="button is-info">Nazaj</button>
+          </div>
+    </td>
+  </form>
+  &nbsp
+  <form method="POST">
+    <div class="field">
+      <label class="label">Tip vaje</label>
+      <div class="control">
+        <div class="select">
+          <select name="tip_vaje">
+            %for tip in tip_vaje:
+            <option>{{tip[1]}}</option>
+            %end
+        </select>
+        </div>
+      </div>
+  </div>
+
+      <div class="field">
+        <label class="label">Datum</label>
+        <div class="control has-icons-left">
+            <input class="input" name="datum" type="date">
+            <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+            </span>
+
+    <div class="field">
+        <label class="label">Udeležba</label>
+          <div class="control">
+              <div class="select">
+                <select name="obvezna">
+                  <option>obvezna</option>
+                  <option>neobvezna</option>
+                </select>
+              </div>
+            </div>
+          </div>
+    </div>
+
+  <div class="field">
+      <label class="label">Vodja</label>
+      <div class="control">
+        <div class="select">
+          <select name="vodja">
+            %for v in vodja:
+            <option value="{{v[0]}}">{{v[2]}} {{v[1]}} </option>
+
+            %end
+
+          </select>
+        
+        </div>
+      </div>
+  </div>
+&nbsp
+&nbsp
+    <div class="field is-grouped">
+        <div class="control">
+            <button class="button is-info">dodaj vajo</button>
+        </div>
+    </div>
+    
+</form>

@@ -1,0 +1,36 @@
+%rebase('ogrodje.html')
+<form action="/tekmovanja/">
+    <td>
+        <div class="buttons">
+            <button class="button is-info">Nazaj</button>
+          </div>
+    </td>
+  </form>
+<form method="POST" action="/dodaj_tekekmovanje/">
+    <div class="select">
+        <select name="tip_tek">
+            %for t in tip_tekmo :
+            <option>{{t[1]}}</option>
+            %end
+        </select>
+      </div>
+  
+    <div class="field">
+        <label class="label">Lokacija</label>
+        <div class="control has-icons-left">
+            <input class="input" name="lokacija" type="text" >
+            <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+            </span>
+    </div>
+
+  <div class="field">
+    <label class="label">Datum</label>
+    <div class="control has-icons-left">
+        <input class="input" name="datum" type="date">
+        <span class="icon is-small is-left">
+            <i class="fas fa-user"></i>
+        </span>
+</div>
+  <button class="button is-info">dodaj tekmovanje</button>
+</form>

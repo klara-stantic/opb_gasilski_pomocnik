@@ -1,0 +1,55 @@
+<div class="select">
+    <label class="label"> Tip vozila</label>
+    <select name="tip_vozila">
+        %for t in tip_v :
+        <option>{{t[1]}}</option>
+        %end
+    </select>
+  </div> 
+
+<div class="select">
+    <label class="label"> Potreben_izpit</label>
+    <select name="izpit">
+        %for i in izpit :
+        <option>{{i[1]}}</option>
+        %end
+    </select>
+  </div>
+
+  <div class="select">
+    <select name="funkcija">
+        %for f in funkcije:
+        <option>{{f[1]}}</option>
+        %end
+    </select>
+  </div>
+  <div class="select">
+    <select name="cin">
+        %for c in cin:
+        <option>{{c[1]}}</option>
+        %end
+    </select>
+  </div>
+  
+  <table>
+    <tr>
+        <div class="select">
+            <label class="label">funkcija</label>
+            <select name="funkcija" value="{{clan[0][2]}}">
+                %for f in fun:
+                <option>{{f[1]}}</option>
+                %end
+            </select>
+          </div>
+    </tr>
+    <tr>
+        <div class="select">
+            <label class="label">čin</label>
+            <select name="cin", value="{{clan[0][4]}}">
+                %for ci in c:
+                <option>{{ci[1]}}</option>
+                %end
+            </select>
+          </div>
+    </tr>
+    <tr>
