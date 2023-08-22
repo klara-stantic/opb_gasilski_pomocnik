@@ -5,8 +5,13 @@ from auth import *
 
 conn_string = "host = '{0}' dbname = '{1}' user = '{2}' password = '{3}'".format(host, dbname, user, password)
 
-# dataclass Drustvo: ??????
+# Ostale potrebne knjižnjice
+import pandas as pd
+from dataclasses import dataclass, field, asdict
+from dataclasses_json import dataclass_json
+from datetime import date
 
+# TINE
 class Clan:
     def __init__(self, emso, ime, priimek, funkcija, cin,zdravniski):
         self.emso = emso
@@ -43,8 +48,84 @@ class Clan:
             cur = baza.cursor()
             sql_niz = f"UPDATE clan SET emso = {emso},ime = '{ime}',priimek='{priimek}',funkcija={funkcija},cin={cin},zdravniski='{zd}' WHERE emso = {emso}"
             cur.execute(sql_niz)
-    
+# KLARA
+#POZOR! @dataclass sam ustvari __init__
 
+
+###############################################################################
+# ČLANI
+###############################################################################
+
+@dataclass_json
+@dataclass
+class Clan:
+    emso: int 
+    ime: str 
+    priimek: str 
+    funkcija: int
+    cin: int
+    zdravniski: date = field(metadata={"format": "date"})
+
+    def __str__(self):
+        return f"Član {self.ime} {self.priimek}"
+        
+    # Metoda, s katero preko emsota dostopamo do clanov
+    @classmethod
+    def get_clan(cls, emso):
+        # Povezava z bazo
+        conn = psycopg2.connect(conn_string)
+        cursor = conn.cursor()
+
+        query = f"SELECT * FROM clan WHERE emso = {emso};"
+        cursor.execute(query)
+        fetched_data = cursor.fetchone()
+
+        cursor.close()
+        conn.close()
+
+        if fetched_data:
+            column_names = [desc[0] for desc in cursor.description]
+            data_dict = dict(zip(column_names, fetched_data))
+            return cls(**data_dict)
+        else:
+            print("Takega člana žal ne najdem!")
+            return None
+        
+    # POZOR! To ne dela z dekoratorji @staticmethod ali @classmethod
+    def dodaj_clana(self):
+        #Ustvarjanje povezave
+        baza = psycopg2.connect(conn_string)
+        cur = baza.cursor()
+        
+        #SQL podatki
+        sql_niz = "INSERT INTO clan (emso, ime, priimek, funkcija, cin, zdravniski) VALUES (%s, %s, %s, %s,%s,%s);"
+        values = (self.emso, self.ime, self.priimek, self.funkcija, self.cin, self.zdravniski)
+        
+        try:
+            cur.execute(sql_niz, values)
+            baza.commit()
+            cur.close()
+            baza.close()
+            return "Shranjeno"
+            
+        except ValueError:
+            cur.close()
+            baza.close()
+            return "Napaka"
+            
+    def odstrani_clana(self):
+        #Ustvarjanje povezave
+        baza = psycopg2.connect(conn_string)
+        cur = baza.cursor()
+
+        sql_niz = f"DELETE FROM clan WHERE emso = {self.emso}"
+        cur.execute(sql_niz)
+    
+        baza.commit()
+        cur.close()
+        baza.close()
+
+# TINE
 class Vozila:
     def __init__(self, registerska_st, tip_vozila, potreben_izpit, st_potnikov,znamka,tehnicni):
             self.registerska_st = registerska_st
@@ -53,11 +134,46 @@ class Vozila:
             self.st_potnikov = st_potnikov
             self.znamka = znamka
             self.tehnicni = tehnicni
+#KLARA
+    def popravi_clana(self, novo_ime=None, nov_priimek=None, nova_funkcija=None, nov_cin=None, nov_zd=None):
+        # Filter
+        if not novo_ime and not nov_cin and not nov_priimek and not nov_zd and not nova_funkcija:
+            return "Ni zahtevanih sprememb. Član se ni spremenil."
+        
+        # Ustvarjanje povezave
+        baza = psycopg2.connect(conn_string)
+        cur = baza.cursor()
+        
+        sql_niz = "UPDATE clan SET"
+        values = []
 
-    def __str__(self):
-        niz = f"Vozilo tipa {self.tip_vozila} z registracijo {self.registerska_st}"
+        if novo_ime:
+            sql_niz += " ime = %s,"
+            values.append(novo_ime)
+        
+        if nov_priimek:
+            sql_niz += " priimek = %s,"
+            values.append(nov_priimek)
+            
+        if nova_funkcija:
+            sql_niz += " funkcija = %s,"
+            values.append(nova_funkcija)
+            
+        if nov_cin:
+            sql_niz += " cin = %s,"
+            values.append(nov_cin)
+            
+        if nov_zd:
+            sql_niz += " zdravniski = %s,"
+            values.append(nov_zd)
 
+        sql_niz = sql_niz.rstrip(',') + " WHERE emso = %s;"
+        values.append(self.emso)
+
+        cur.execute(sql_niz, tuple(values))
+        print(f"Popravljen član z emšo: {self.emso}")
     
+# TINE
     def dodaj_vozilo(self):
         with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
@@ -80,8 +196,16 @@ class Vozila:
             cur = baza.cursor()
             sql_niz = f"UPDATE vozilo  SET registrska_st  = '{reg}',tip_vozila = {tip},potreben_izpit={izpit},st_potnikov={potniki},znamka='{znamka}',tehnicni='{tehnicni}' WHERE registrska_st  = '{reg}'"
             cur.execute(sql_niz)
+# KLARA
+        baza.commit()
+        cur.close()
+        baza.close()
 
+###############################################################################
+# INTERVENCIJE
+###############################################################################
 
+# TINE
 ### prvotno sa mislia dodat še kraj ma ni pa nič kritičnega če to spustimo in je kako to itak v opisu
 class Intervencije:
     def __init__(self, opis, datum, tip):
@@ -203,5 +327,127 @@ class Tekomvanje:
     
 
 
+
+# KLARA
+@dataclass_json
+@dataclass
+class Intervencija:
+    id: int= field(init=False) # Ker ga baza generira sama!
+    opis: str 
+    datum: date = field(metadata={"format": "date"})
+    tip: int
+
+    def __str__(self):
+        return f"Intervencija ({self.tip}) dne {self.datum} z opisom: {self.opis}"
+        
+    # Metoda, s katero preko id dostopamo do intervencij
+    @classmethod
+    def get_intervencija(cls, id):
+        # Povezava z bazo
+        conn = psycopg2.connect(conn_string)
+        cursor = conn.cursor()
+
+        query = f"SELECT * FROM intervencija WHERE id = {id};"
+        cursor.execute(query)
+        fetched_data = cursor.fetchone()
+
+        cursor.close()
+        conn.close()
+
+        if fetched_data:
+            column_names = [desc[0] for desc in cursor.description]
+            data_dict = dict(zip(column_names, fetched_data))
+            return cls(**data_dict)
+        else:
+            print("Take intervencije žal ne najdem!")
+            return None
+        
+    # POZOR! To ne dela z dekoratorji @staticmethod ali @classmethod
+    def dodaj_intervencijo(self):
+        #Ustvarjanje povezave
+        baza = psycopg2.connect(conn_string)
+        cur = baza.cursor()
+        
+        #SQL podatki
+        sql_niz = "INSERT INTO intervencija (opis,datum,tip) VALUES (%s, %s, %s);"
+        values = (self.opis, self.datum, self.tip)
+        
+        try:
+            cur.execute(sql_niz, values)
+            # Pridobiti želimo ustvarjen id!
+            cur.execute("SELECT currval(pg_get_serial_sequence('intervencija', 'id'));")
+            generated_id = cur.fetchone()[0]  # Generiran id
+            self.id = generated_id # Shranimo id
+            baza.commit()
+            cur.close()
+            baza.close()
+            return "Shranjeno"
+            
+        except ValueError:
+            cur.close()
+            baza.close()
+            return "Napaka"
+            
+    def odstrani_intervencijo(self):
+        #Ustvarjanje povezave
+        baza = psycopg2.connect(conn_string)
+        cur = baza.cursor()
+
+        sql_niz = f"DELETE FROM intervencija WHERE id = {self.id}"
+        cur.execute(sql_niz)
+    
+        baza.commit()
+        cur.close()
+        baza.close()
+
+    def popravi_intervencijo(self, nov_opis=None, nov_datum=None, nov_tip=None):
+        # Filter
+        if not nov_opis and not nov_datum and not nov_tip:
+            return "Ni zahtevanih sprememb. Član se ni spremenil."
+        
+        # Ustvarjanje povezave
+        baza = psycopg2.connect(conn_string)
+        cur = baza.cursor()
+        
+        sql_niz = "UPDATE clan SET"
+        values = []
+
+        if nov_opis:
+            sql_niz += " opis = %s,"
+            values.append(nov_opis)
+        
+        if nov_tip:
+            sql_niz += " tip = %s,"
+            values.append(nov_tip)
+            
+        if nov_datum:
+            sql_niz += " datum = %s,"
+            values.append(nov_datum)
+
+        sql_niz = sql_niz.rstrip(',') + " WHERE id = %s;"
+        values.append(self.id)
+
+        cur.execute(sql_niz, tuple(values))
+        print(f"Popravljena intervencija z id: {self.id}")
+    
+        baza.commit()
+        cur.close()
+        baza.close()
+
+###############################################################################
+# VOZILA
+###############################################################################
+
+
+
+###############################################################################
+# VAJE
+###############################################################################
+
+
+
+###############################################################################
+# TEKMOVANJA
+###############################################################################
 
 
