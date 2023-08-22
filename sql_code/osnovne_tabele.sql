@@ -14,7 +14,8 @@ CREATE TABLE clan (
     priimek TEXT NOT NULL,
     funkcija INTEGER NOT NULL REFERENCES funkcija(id_funkcija), 
     cin INTEGER NOT NULL REFERENCES cin(id_cin),
-    zdravniski DATE
+    zdravniski DATE, 
+    aktiven BOOLEAN NOT NULL DEFAULT true
 );
 
 CREATE TABLE tip_vozila (
@@ -34,7 +35,8 @@ CREATE TABLE vozilo (
     potreben_izpit INTEGER NOT NULL REFERENCES kategorija_vozniskega_dovoljenja(id_kategorije),
     st_potnikov INTEGER NOT NULL,
     znamka TEXT NOT NULL,
-    tehnicni DATE
+    tehnicni DATE,
+    aktivno BOOLEAN NOT NULL DEFAULT true
 );
 
 CREATE TABLE tip_intervencije (
