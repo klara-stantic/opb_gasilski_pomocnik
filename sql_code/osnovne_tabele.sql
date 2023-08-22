@@ -1,4 +1,3 @@
--- Active: 1681832541458@@baza.fmf.uni-lj.si@5432@sem2023_tinef@public
 CREATE TABLE funkcija (
     id_funkcija SERIAL PRIMARY KEY, 
     naziv TEXT NOT NULL
@@ -14,7 +13,8 @@ CREATE TABLE clan (
     ime TEXT NOT NULL, 
     priimek TEXT NOT NULL,
     funkcija INTEGER NOT NULL REFERENCES funkcija(id_funkcija), 
-    cin INTEGER NOT NULL REFERENCES cin(id_cin)
+    cin INTEGER NOT NULL REFERENCES cin(id_cin),
+    zdravniski DATE
 );
 
 CREATE TABLE tip_vozila (
@@ -32,7 +32,9 @@ CREATE TABLE vozilo (
     registrska_st TEXT NOT NULL PRIMARY KEY,
     tip_vozila INTEGER NOT NULL REFERENCES tip_vozila(id_vozilo),
     potreben_izpit INTEGER NOT NULL REFERENCES kategorija_vozniskega_dovoljenja(id_kategorije),
-    st_potnikov INTEGER NOT NULL
+    st_potnikov INTEGER NOT NULL,
+    znamka TEXT NOT NULL,
+    tehnicni DATE
 );
 
 CREATE TABLE tip_intervencije (
@@ -92,10 +94,4 @@ CREATE TABLE tekmovanje (
 
 CREATE TABLE ekipa (
     id SERIAL PRIMARY KEY
-);
-
-CREATE TABLE tehnicni_pregledi_vozil (
-    id SERIAL PRIMARY KEY,
-    vozilo TEXT NOT NULL REFERENCES vozilo(registrska_st),
-    datum DATE NOT NULL
 );

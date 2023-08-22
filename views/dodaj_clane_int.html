@@ -1,0 +1,43 @@
+%rebase('ogrodje.html')
+<h1><b>Dodaj člane in vozila prisotne na intervenciji</b></h1>
+<form method="POST" action="/dodaj_clane_na_int/">
+    <div class="columns">
+        <div class="column">
+            <h1><b>Člani:</b></h1>
+            <table>
+                %for emso,ime,priimek,funkcija,cin,zdravniski in clani:
+                <tr>
+                    <td>
+                        <label class="checkbox">
+                            <input type="checkbox" name="{{emso}}" value="{{emso}}">
+                            {{priimek}} {{ime}}
+                        </label>
+                    </td>
+                    
+                </tr>
+                %end
+            </table>
+            <button class="button is-info">dodaj</button>
+            <input type="hidden" name="id_int" value="{{id_int[len(id_int)-1][0]}}">
+        </div>
+        <div class="column">
+            <h1><b>Vozila:</b></h1>
+            <table>
+                %for reg,tip,izpit,potniki,znamka,tehnicni in vozila:
+                <tr>
+                    <td>
+                        <label class="checkbox">
+                            <input type="checkbox" name="{{reg}}" value="{{reg}}">
+                            {{tip_v[tip - 1 ][1]}} {{znamka}}
+                        </label>
+                    </td>
+                    
+                </tr>
+                %end
+            </table>
+        </div>
+    
+            
+        </div>
+    </div>
+  </form>

@@ -1,0 +1,37 @@
+%rebase('ogrodje.html')
+
+<table>
+    <td>
+        <form action="/">
+            <td>
+                <div class="buttons">
+                    <button class="button is-info">Nazaj</button>
+                  </div>
+            </td>
+          </form>
+    </td>
+    <td>
+        &nbsp
+    </td>
+        <form action="/dodaj_tekmovanje/">
+            <td>
+                <div class="buttons">
+                    <button class="button is-info">Dodaj tekmovanje</button>
+                </div>
+            </td>
+        </form>
+    <td>
+
+    </td>
+</table>
+&nbsp
+<h1 class="title is-4">TEKMOVANJA</h1>
+%for id,datum,lokacija,tip in tek:
+<form method="POST" action="/odstrani_tek/">
+    <div class="notification is-info">
+        <button class="delete"></button>
+        <input type="hidden" name="id_tek" value="{{id}}">
+        <b>{{tip_tek[tip - 1][1]}}</b> na lokaciji <b>{{lokacija}}</b> dne <b>{{datum}}</b>
+    </div>
+</form>
+%end

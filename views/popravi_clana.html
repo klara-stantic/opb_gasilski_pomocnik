@@ -1,0 +1,74 @@
+% rebase('ogrodje.html')
+<form action="/clani/">
+    <td>
+        <div class="buttons">
+            <button class="button is-info">Nazaj</button>
+          </div>
+    </td>
+  </form>
+  <form method="POST" action="/popravi_clana/">
+
+    <input type="hidden" name="emso" value="{{clan[0][0]}}">
+
+    <div class="field">
+        <label class="label">ime</label>
+        <div class="control has-icons-left">
+            <input class="input" name="ime" type="text" value="{{clan[0][1]}}" >
+            <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+            </span>
+    </div>
+    
+    <div class="field">
+        <label class="label">priimek</label>
+        <div class="control has-icons-left">
+            <input class="input" name="priimek" type="text" value="{{clan[0][2]}}" >
+            <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+            </span>
+    </div>
+    <div class="field">
+        <label class="label">Funkcija</label>
+        <div class="control">
+          <div class="select">
+            <select name="funkcija" value="{{clan[0][2]}}">
+                %for f in fun:
+                <option>{{f[1]}}</option>
+                %end
+            </select>
+          </div>
+        </div>
+    </div>
+
+    <div class="field">
+        <label class="label">Čin</label>
+        <div class="control">
+          <div class="select">
+            <select name="cin" value="{{clan[0][4]}}">
+                %for ci in c:
+                <option>{{ci[1]}}</option>
+                %end
+            </select>
+          </div>
+        </div>
+    </div>
+    
+    <div class="field">
+         <label class="label">Zadnji zdravniški pregled</label>
+            <div class="control has-icons-left">
+                <input class="input" name="zd" type="date", value="{{clan[0][5]}}">
+                <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                </span>
+            </div>
+    </div>
+
+    <hr> 
+    
+    <div class="field is-grouped">
+        <div class="control">
+            <button class="button is-info">Popravi</button>
+        </div>
+    </div>
+    
+</form>

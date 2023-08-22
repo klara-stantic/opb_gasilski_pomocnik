@@ -1,4 +1,3 @@
--- Active: 1681832541458@@baza.fmf.uni-lj.si@5432@sem2023_tinef@public
 CREATE TABLE opravljeni_tecaji (
     id SERIAL PRIMARY KEY, 
     id_tecaja INTEGER NOT NULL REFERENCES tecaj(id),
@@ -46,7 +45,7 @@ CREATE TABLE lastnistva_opreme (
 
 CREATE TABLE oprema_v_vozilih (
     id SERIAL PRIMARY KEY,
-    registracija_vozila TEXT REFERENCES vozila(registrska_st) DEFAULT 0,
+    registracija_vozila TEXT REFERENCES vozilo(registrska_st) DEFAULT 0,
     tip_opreme INTEGER NOT NULL REFERENCES skupna_oprema(id), 
     dodatne_informacije TEXT
 );
@@ -57,8 +56,3 @@ CREATE TABLE potrebuje_tecaj (
     id_tecaja INTEGER NOT NULL REFERENCES tecaj(id)
 );
 
-CREATE TABLE skrbnik_vozila (
-    id SERIAL PRIMARY KEY, 
-    emso_clana INTEGER NOT NULL REFERENCES clan(emso), 
-    registracija_vozila TEXT NOT NULL REFERENCES vozilo(registrska_st)
-);
