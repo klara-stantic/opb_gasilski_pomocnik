@@ -25,7 +25,7 @@ def osnovna_stran():
 def prikaz_clanov():
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
-            clani = cur.execute("""SELECT * FROM clan WHERE aktiven = true""")
+            clani = cur.execute("""SELECT * FROM clan WHERE aktiven = true  ORDER BY ime""")
             clani = cur.fetchall()
             fun = cur.execute("""SELECT * FROM funkcija""")
             fun = cur.fetchall()
@@ -322,7 +322,7 @@ def odstrani_tekmovanje():
 def vaje():
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
-            vaje = cur.execute("""SELECT id,obvezna,datum,tip_vaje,ime,priimek FROM vaja JOIN clan ON vodja=emso""")
+            vaje = cur.execute("""SELECT id,obvezna,tip_vaje,datum,ime,priimek FROM vaja JOIN clan ON vodja=emso""")
             vaje = cur.fetchall()
             tip = cur.execute("""SELECT * FROM tip_intervencije""")
             tip= cur.fetchall()
@@ -358,6 +358,12 @@ def post_dodaj_vajo():
     nov = Vaja(u,tip_id[0][0],int(vodja), datum)
     nov.dodaj_vajo()
     redirect('/vaje/')
+
+@route('/odstrani_vajo/', method='POST')
+def odstrani_vajo():
+     id = request.forms.getunicode('id_vaje')
+     Vaja.odstrani_vajo(int(id))
+     redirect("/vaje/")
 
 ###########################################################################
 @get("/oprema/")

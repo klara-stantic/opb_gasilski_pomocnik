@@ -455,7 +455,7 @@ class Vaja:
         
        #SQL podatki
         sql_niz = "INSERT INTO vaja (obvezna, tip_vaje, vodja, datum) VALUES (%s, %s, %s, %s);"
-        values = (self.obvezna,self.tip_vaje,self.vodjaself.datum)
+        values = (self.obvezna,self.tip_vaje,self.vodja,self.datum)
         
         try:
             cur.execute(sql_niz, values)

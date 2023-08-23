@@ -26,31 +26,23 @@
 </table>
 &nbsp
 <h1 class="title is-4">VAJE</h1>
-%for id,datum,obvezna,tip_vaje,ime,priimek in vaje:
-<form method="POST" action="/odstrani_vajo/">
-    <div class="notification is-info">
-        <button class="delete"></button>
-        <input type="hidden" name="id_vaje" value="{{id}}">
-        <b> {{obvezna}} </b>  vaja <b>{{tip[tip_vaje - 1][1]}}</b> dne <b>{{datum}}</b>  VODJA:<b>{{priimek}} {{ime}}</b>
-        <table>
-            <td>
-                <form action="/prikaz_int/" method="POST">
-                    <input type="hidden" name="id" value="{{id}}" >
-                    <div class="buttons">
-                        <button class="button is-primary">Pregled</button>
-                      </div>
-                </form>
-            </td>
+%for id,obvezna,tip_vaje,datum,ime,priimek in vaje:
+    <form method="POST" action="/odstrani_vajo/">
+        %if obvezna:
+            <div class="notification is-info">
+                <button class="delete"></button>
+                <input type="hidden" name="id_vaje" value="{{id}}">
+                <b> Obvezna </b>  vaja <b>{{tip[tip_vaje - 1][1]}}</b> dne <b>{{datum}}</b>  VODJA:<b> {{priimek}} {{ime}}</b>
+            </div>
             &nbsp
-            <td>
-                <form action="/prikaz_int/" method="POST">
-                    <input type="hidden" name="id" value="{{id}}" >
-                    <div class="buttons">
-                        <button class="button is-primary">Dodaj clana</button>
-                      </div>
-                </form>
-            </td>
-        </table>
-    </div>
+            
+        %else:
+            <div class="notification is-info">
+                <button class="delete"></button>
+                <input type="hidden" name="id_vaje" value="{{id}}">
+                <b> Neobvezna </b>  vaja <b>{{tip[tip_vaje - 1][1]}}</b> dne <b>{{datum}}</b>  VODJA:<b> {{priimek}} {{ime}}</b>
+            </div>
+            &nbsp
+        %end
 </form>
 %end
