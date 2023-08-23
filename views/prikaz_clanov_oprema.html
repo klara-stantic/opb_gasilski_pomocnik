@@ -1,9 +1,5 @@
 % rebase('ogrodje.html')
-<style>
-    table {
-      width: 100%;
-    }
-  </style>
+
 
   <h4 class="title is-4">OPREMA ČLANOV</h4>
 
@@ -23,7 +19,7 @@
             </thead>
             
             <tbody>
-              %for ime,priimek in clani:
+              %for emso,ime,priimek in clani:
                 <tr>
                     <th>{{priimek}}</th>
                     <th>{{ime}}</th>

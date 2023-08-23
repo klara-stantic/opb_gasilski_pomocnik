@@ -25,7 +25,7 @@ def osnovna_stran():
 def prikaz_clanov():
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
-            clani = cur.execute("""SELECT * FROM clan WHERE aktiven = true""")
+            clani = cur.execute("""SELECT * FROM clan WHERE aktiven = true  ORDER BY ime""")
             clani = cur.fetchall()
             fun = cur.execute("""SELECT * FROM funkcija""")
             fun = cur.fetchall()
@@ -322,7 +322,7 @@ def odstrani_tekmovanje():
 def vaje():
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
-            vaje = cur.execute("""SELECT id,obvezna,datum,tip_vaje,ime,priimek FROM vaja JOIN clan ON vodja=emso""")
+            vaje = cur.execute("""SELECT id,obvezna,tip_vaje,datum,ime,priimek FROM vaja JOIN clan ON vodja=emso""")
             vaje = cur.fetchall()
             tip = cur.execute("""SELECT * FROM tip_intervencije""")
             tip= cur.fetchall()
@@ -359,7 +359,53 @@ def post_dodaj_vajo():
     nov.dodaj_vajo()
     redirect('/vaje/')
 
+@route('/odstrani_vajo/', method='POST')
+def odstrani_vajo():
+     id = request.forms.getunicode('id_vaje')
+     Vaja.odstrani_vajo(int(id))
+     redirect("/vaje/")
+
 ###########################################################################
+@get("/oprema/")
+def oprema():
+    with psycopg2.connect(conn_string) as baza:
+            cur = baza.cursor()
+            clani = cur.execute("""SELECT emso,ime,priimek FROM clan WHERE aktiven=true ORDER BY priimek,ime""")
+            clani = cur.fetchall()
+    return template("prikaz_clanov_oprema.html",clani=clani)
+
+@route("/preusmeritev_pregled_opreme/", method='POST')
+def prikaz_opreme():
+    emso_za_prikaz = request.forms.getunicode('emso')
+    with psycopg2.connect(conn_string) as baza:
+        cur = baza.cursor()
+        oprema_clana = cur.execute(f"""SELECT * FROM osebna_oprema WHERE emso_clana = {emso_za_prikaz} """)
+        oprema_clana = cur.fetchall()
+        clan = cur.execute(f"""SELECT emso,ime,priimek FROM clan WHERE emso ={emso_za_prikaz} """)
+        clan = cur.fetchall()
+    
+    return template('podroben_prikaz_opreme.html',oprema_clana=oprema_clana,clan=clan)
+
+
+@route("/dodaj_opremo/", method='POST')
+def dodaj_opremo_clanau():
+    emso_za_dodajo = request.forms.getunicode('emso')
+    oprema = request.forms.getunicode('oprema')
+    nov = Oprema(int(emso_za_dodajo),oprema)
+    nov.dodaj_opremo()
+    redirect('/oprema/')
+
+
+@route("/odstrani_opremo/", method='POST')
+def prikaz_opreme():
+    id_opreme = request.forms.getunicode('id_opreme')
+    return id_opreme
+
+
+
+
+
+###################################################################################33
 # Priklop na bazo
 baza = psycopg2.connect(conn_string)
 
