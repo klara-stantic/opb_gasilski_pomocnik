@@ -14,6 +14,9 @@ CREATE TABLE clan (
     priimek TEXT NOT NULL,
     funkcija INTEGER NOT NULL REFERENCES funkcija(id_funkcija), 
     cin INTEGER NOT NULL REFERENCES cin(id_cin),
+    uporabnisko_ime TEXT NOT NULL UNIQUE,
+    geslo BLOB NOT NULL,
+    administrativne_pravice BOOLEAN NOT NULL DEFAULT false,
     zdravniski DATE, 
     aktiven BOOLEAN NOT NULL DEFAULT true
 );
