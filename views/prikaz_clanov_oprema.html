@@ -1,0 +1,37 @@
+% rebase('ogrodje.html')
+<style>
+    table {
+      width: 100%;
+    }
+  </style>
+
+  <h4 class="title is-4">OPREMA ČLANOV</h4>
+
+  <form action="/">
+    <td>
+        <div class="buttons">
+            <button class="button is-info">Nazaj</button>
+          </div>
+    </td>
+  </form>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>PRIIMEK</th>
+                <th>IME</th>
+              </tr>
+            </thead>
+            
+            <tbody>
+              %for ime,priimek in clani:
+                <tr>
+                    <th>{{priimek}}</th>
+                    <th>{{ime}}</th>
+                  <th>
+                    <form method="POST" action="/preusmeritev_pregled_opreme/">
+                      <input type="hidden" id="emso" name="emso" value="{{emso}}">
+                      <button class="button is-info">Poglej opremo</button>
+                    </form>
+                  </th>
+              %end
+            </tbody>   

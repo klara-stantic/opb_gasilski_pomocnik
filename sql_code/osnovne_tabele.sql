@@ -53,6 +53,7 @@ CREATE TABLE intervencija (
 
 CREATE TABLE osebna_oprema (
     id SERIAL PRIMARY KEY,
+    emso_clana INTEGER NOT NULL REFERENCES clan(emso),
     tip_opreme TEXT NOT NULL
 );
 
