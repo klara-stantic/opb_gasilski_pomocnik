@@ -6,7 +6,7 @@ Profesor: Janoš Vidali
 Asistent: Gašper Domen Romih     
 
 ## O programu 
-Program je namenjen lokalni uporabi v gasilskih društvih. Primarno je namenjen zbiranju in shranjevanju podatkov o društvu; nadgradnje pa bodo vključevale opomnike, generiranje novih podatkov, statistike itd.   
+Program je namenjen lokalni uporabi v gasilskih društvih. Primarno je namenjen zbiranju in shranjevanju podatkov o društvu; nadgradnje pa bodo vključevale opomnike, generiranje novih podatkov, statistike itd.
   
 # Delo
 Projekt je izdelek več ur skupnega dela, zato so commiti velikokrat narejeni iz enega samega naslova, vendar sva vedno avtorja oba.
