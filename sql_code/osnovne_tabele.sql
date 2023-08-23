@@ -76,11 +76,11 @@ CREATE TABLE tecaj (
 );
 
 CREATE TABLE vaja (
-    id SERIAL PRIMARY KEY,
-    datum DATE NOT NULL, 
+    id SERIAL PRIMARY KEY, 
     obvezna BOOLEAN NOT NULL, 
     tip_vaje INTEGER NOT NULL REFERENCES tip_intervencije(id_tipa_intervencije), 
-    vodja INTEGER REFERENCES clan(emso)
+    vodja INTEGER REFERENCES clan(emso),
+    datum DATE NOT NULL
 );
 
 CREATE TABLE tip_tekmovanja (
