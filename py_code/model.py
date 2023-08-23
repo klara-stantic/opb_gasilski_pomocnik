@@ -412,34 +412,80 @@ class Intervencija:
 # VAJE
 ###############################################################################
 
+@dataclass_json
+@dataclass
 class Vaja:
-    def __init__(self,datum,obvezna,tip_vaje,vodja):
-        self.datum = datum
-        self.obvezna = obvezna
-        self.tip_vaje = tip_vaje
-        self.vodja = vodja
+    id: int= field(init=False)
+    obvezna: bool
+    tip_vaje: int
+    vodja: int
+    datum: date = field(metadata={"format": "date"}, default=None)
 
     def __str__(self):
-        niz = f"vaja tipa {self.tip_vaje} dne {self.datum}, ki jo vodi: {self.vodja}"
+        niz = f"Vaja tipa {self.tip_vaje} dne {self.datum}, ki jo vodi {self.vodja}"
         return niz
+    
+    # Metoda, s katero preko id dostopamo do vaje
+    @classmethod
+    def get_vaja(cls,id):
+        # Povezava z bazo
+        conn = psycopg2.connect(conn_string)
+        cursor = conn.cursor()
 
+        query = f"SELECT * FROM vaja WHERE id = {id};"
+        cursor.execute(query)
+        fetched_data = cursor.fetchone()
+
+        cursor.close()
+        conn.close()
+
+        if fetched_data:
+            column_names = [desc[0] for desc in cursor.description]
+            data_dict = dict(zip(column_names, fetched_data))
+            return cls(**data_dict)
+        else:
+            print("Take vaje ne najdem!")
+            return None
+        
+    # POZOR! To ne dela z dekoratorji @staticmethod ali @classmethod
     def dodaj_vajo(self):
-        with psycopg2.connect(conn_string) as baza:
-            cur = baza.cursor()
-            try:
-                sql_niz = "INSERT INTO vaja (datum,obvezna,tip_vaje,vodja) VALUES (%s, %s, %s,%s);"
-                cur.execute(sql_niz, ( self.datum,self.obvezna,self.tip_vaje,self.vodja))
-                ## ko dadoamo vajo bi mogli potem pot self.id shranit id vaje
-                ## ker jo potem potrebujemo za izpris ali bilo kaj
-                return "Shranjeno"
-            except ValueError:
-                return "Napaka"
+        #Ustvarjanje povezave
+        baza = psycopg2.connect(conn_string)
+        cur = baza.cursor()
+        
+       #SQL podatki
+        sql_niz = "INSERT INTO vaja (obvezna, tip_vaje, vodja, datum) VALUES (%s, %s, %s, %s);"
+        values = (self.obvezna,self.tip_vaje,self.vodjaself.datum)
+        
+        try:
+            cur.execute(sql_niz, values)
+            # Pridobiti želimo ustvarjen id!
+            cur.execute("SELECT currval(pg_get_serial_sequence('vaja', 'id'));")
+            generated_id = cur.fetchone()[0]  # Generiran id
+            self.id = generated_id # Shranimo id
+            baza.commit()
+            cur.close()
+            baza.close()
+            return "Shranjeno"
             
-    def odstrani_vajo(self):
-        with psycopg2.connect(conn_string) as baza:
-            cur = baza.cursor()
-            sql_niz = "DELETE FROM intervencija WHERE id = {self.id}"
-            cur.execute(sql_niz)    
+        except ValueError:
+            cur.close()
+            baza.close()
+            return "Napaka"
+        
+    @staticmethod     
+    def odstrani_vajo(id):
+        #Ustvarjanje povezave
+        baza = psycopg2.connect(conn_string)
+        cur = baza.cursor()
+
+        sql_niz = f"DELETE FROM vaja WHERE id = {id}"
+        cur.execute(sql_niz)
+    
+        baza.commit()
+        cur.close()
+        baza.close()
+
 ###############################################################################
 # TEKMOVANJA
 ###############################################################################

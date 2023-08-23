@@ -314,12 +314,15 @@ def odstrani_tekmovanje():
     Tekomvanje.odstrani_tekmovanje(int(id))
     redirect('/tekmovanja/')
 
-######################################################################
+###############################################################################
+# VAJE
+###############################################################################
+
 @get("/vaje/")
 def vaje():
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
-            vaje = cur.execute("""SELECT id,datum,obvezna,tip_vaje,ime,priimek FROM vaja JOIN clan ON vodja=emso""")
+            vaje = cur.execute("""SELECT id,obvezna,datum,tip_vaje,ime,priimek FROM vaja JOIN clan ON vodja=emso""")
             vaje = cur.fetchall()
             tip = cur.execute("""SELECT * FROM tip_intervencije""")
             tip= cur.fetchall()
@@ -352,7 +355,7 @@ def post_dodaj_vajo():
             tip_id = cur.execute(f"""SELECT id_tipa_intervencije FROM tip_intervencije WHERE tip  = %s""",[tip_vaje])
             tip_id = cur.fetchall()
 
-    nov = Vaja(datum,u,tip_id[0][0],int(vodja))
+    nov = Vaja(u,tip_id[0][0],int(vodja), datum)
     nov.dodaj_vajo()
     redirect('/vaje/')
 
@@ -402,5 +405,3 @@ baza = psycopg2.connect(conn_string)
 
 # Poženemo strežnik
 run(host='localhost', port=8080, reloader=True) 
-
-## vaja git hahahaha
