@@ -10,7 +10,9 @@
     <div class="field">
         <label class="label"> ime</label>
         <div class="control has-icons-left">
-            <input class="input" name="ime" type="text" >
+            <input class="input" name="ime" type="text" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Ime mora biti dodano')">
             <span class="icon is-small is-left">
                 <i class="fas fa-user"></i>
             </span>
@@ -18,7 +20,9 @@
     <div class="field">
         <label class="label">priimek</label>
         <div class="control has-icons-left">
-            <input class="input" name="priimek" type="text" >
+            <input class="input" name="priimek" type="text" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Priimek mora biti dodan')">
             <span class="icon is-small is-left">
                 <i class="fas fa-user"></i>
             </span>
@@ -26,7 +30,9 @@
     <div class="field">
         <label class="label">emso</label>
         <div class="control has-icons-left">
-            <input class="input" name="emso" type="number">
+            <input class="input" name="emso" type="number"required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Emso mora biti dodan in mora biti število')">
             <span class="icon is-small is-left">
                 <i class="fas fa-user"></i>
             </span>
