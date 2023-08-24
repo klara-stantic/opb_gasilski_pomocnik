@@ -15,28 +15,6 @@ from datetime import date
 import bcrypt
 
 ###############################################################################
-# UPORABNIKI
-###############################################################################
-
-class Uporabnik:
-    def __init__(self, uporabnisko_ime, cur):
-        sql_niz = f"SELECT emso, ime, priimek, funkcija, cin, uporabnisko_ime, geslo, administrativne_pravice, zdravniski, aktiven FROM clan WHERE uporabnisko_ime = {uporabnisko_ime}"
-        cur.execute(sql_niz)
-        res = cur.fetchone
-        if res is None:
-            raise ValueError("Takega uporabnika ni!")
-        self.emso, self.ime, self.priimek, self.funkcija, self.cin, self.uporabnisko_ime, self.geslo, self.administrativne_pravice, self.zdravniski, self.aktiven = res
-        
-    # connection za uporabnika
-    def conn_string_user(self):
-        if self.administrativne_pravice:
-            uporabnikov_profil = "administrator"
-        if not self.administrativne_pravice:
-            uporabnikov_profil = "javnost"
-        conn_str = "host = '{0}' dbname = '{1}' user = '{2}' password = '{3}'".format(host, dbname, uporabnikov_profil, self.geslo)
-        return conn_str
-    
-###############################################################################
 # ČLANI
 ###############################################################################
 
@@ -48,8 +26,8 @@ class Clan:
     priimek: str 
     funkcija: int
     cin: int
-    uporabnisko_ime: str
-    geslo: str = ""
+    uporabnisko_ime: str = field(init = False)
+    geslo: str = field(init = False)
     administrativne_pravice: bool = field(default=False)
     zdravniski: date = field(metadata={"format": "date"}, default=None)
     aktiven: bool = field(default=True)
@@ -76,10 +54,6 @@ class Clan:
             return False
         else:
             return True
-        
-        # Mogoče bo tole uporabno za nadaljnjo implementacijo!
-        if not validate_username(self.username):
-            raise ValueError("Username must be unique")
     
     # Validacija gesel
     def nastavi_geslo(self, geslo):
@@ -169,10 +143,6 @@ class Clan:
         cur.close()
         baza.close()
         
-        
-    
-    # TO SAMO SPREMENI AKTIVNOST
-    # Ob priliki je treba nardit dve loceni funkciji za pretvorbo IN uskladit zs spletnim vmesnikom
     @staticmethod
     def spremeni_aktivnost(emso):
         # Poisci clana
@@ -263,19 +233,6 @@ class Clan:
             baza.close()
             return "Napaka"
             
-    # Te načeloma ne rabiva
-    #def odstrani_clana(self):
-    #    #Ustvarjanje povezave
-    #    baza = psycopg2.connect(conn_string)
-    #    cur = baza.cursor()
-
-    #    sql_niz = f"DELETE FROM clan WHERE emso = {self.emso}"
-    #    cur.execute(sql_niz)
-    
-    #    baza.commit()
-    #    cur.close()
-    #    baza.close()
-
 ###############################################################################
 # VOZILA
 ###############################################################################

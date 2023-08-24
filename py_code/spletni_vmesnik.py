@@ -4,7 +4,7 @@ from auth import *
 from model import *
 from datetime import date 
 from psycopg2 import *
-import bcrypt
+import hashlib
 
 import os
 
@@ -18,11 +18,54 @@ DB_PORT = os.environ.get('POSTGRES_PORT', 5432)
 
 # Database dostop
 conn_string = "host = '{0}' dbname = '{1}' user = '{2}' password = '{3}'".format(host, dbname, user, password)
+baza = connect(conn_string, isolation_level=None)
+cur = baza.cursor()
+# cur.execute("PRAGMA foreign_keys = ON;") nevem kaj ta rec dela
+
+###############################################################################
+# Osnovna stran
+############################################################################### 
+# Mapa za statične vire (slike, css, ...)
+static_dir = "./static"
+
+skrivnost = "rODX3ulHw3ZYRdbIVcp1IfJTDn8iQTH6TFaNBgrSkjIulrklaraintinestakul"
+# streženje statičnih datotek
+
+def nastaviSporocilo(sporocilo = None):
+    # global napakaSporocilo
+    staro = request.get_cookie("sporocilo", secret=skrivnost)
+    if sporocilo is None:
+        response.delete_cookie('sporocilo')
+    else:
+        response.set_cookie('sporocilo', sporocilo, path="/", secret=skrivnost)
+    return staro 
+
+
+def preveriUporabnika(): 
+    uporabnisko_ime = request.get_cookie("uporabnisko_ime", secret=skrivnost)
+    if uporabnisko_ime:
+        cur = baza.cursor()    
+        uporabni = None
+        try: 
+            uporabnik = cur.execute("SELECT * FROM clan WHERE uporabnisko_ime = ?", (uporabnisko_ime, )).fetchone()
+        except:
+            uporabnik = None
+        if uporabnik: 
+            return uporabnik
+    redirect('/prijava')
+
+@route("/static/<filename:path>")
+def static(filename):
+    return static_file(filename, root=static_dir)
+
 
 
 
 @get('/')
 def osnovna_stran():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     napaka = nastaviSporocilo()
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
@@ -48,6 +91,9 @@ def osnovna_stran():
 
 
 ###############################################################################
+# Člani
+############################################################################### 
+
 @get('/clani/') 
 def prikaz_clanov():
     napaka = nastaviSporocilo()
@@ -154,13 +200,13 @@ def prikaz_vozil():
 @get('/dodaj_vozilo/')
 def novo_vozilo():
     napaka = nastaviSporocilo()
-     with psycopg2.connect(conn_string) as baza:
+    with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
             tip_v = cur.execute("""SELECT * FROM tip_vozila""")
             tip_v = cur.fetchall()
             izpit = cur.execute("""SELECT * FROM kategorija_vozniskega_dovoljenja""")
             izpit = cur.fetchall()
-     return template('novo_vozilo.html',napaka=napaka,tip_v=tip_v,izpit=izpit)
+    return template('novo_vozilo.html',napaka=napaka,tip_v=tip_v,izpit=izpit)
 
 @post('/dodaj_vozilo/')
 def novo_vozilo_post():
@@ -493,6 +539,89 @@ def prikaz_opreme():
     redirect(f"/preusmeritev_pregled_opreme/{emso}/")
 
 
+###############################################################################
+# Registracija, prijava, odjava
+############################################################################### 
+
+def hashGesla(s):
+    m = hashlib.sha256()
+    m.update(s.encode("utf-8"))
+    return m.hexdigest()
+
+@get('/registracija')
+def registracija_get():
+    napaka = nastaviSporocilo()
+    return template('registracija.html', napaka=napaka)
+
+@route('/registracija', method='POST')
+def registracija_post():
+    emso = request.forms.emso
+    uporabnisko_ime = request.forms.uporabnisko_ime
+    geslo = request.forms.geslo
+    geslo2 = request.forms.geslo2
+    if emso is None or uporabnisko_ime is None or geslo is None or geslo2 is None:
+        nastaviSporocilo('Registracija ni možna! Prosim, nastavi vsa obvezna polja.') 
+        redirect('/registracija')
+        return
+    cur = baza.cursor()    
+    uporabnik = None
+    try: 
+        uporabnik = cur.execute("SELECT * FROM clan WHERE emso = ?", (emso, )).fetchone()
+    except:
+        uporabnik = None
+    if uporabnik is None:
+        nastaviSporocilo('Registracija ni možna! Člana s to EMŠO ni v bazi.') 
+        redirect('/registracija')
+        return
+    if len(geslo) < 4:
+        nastaviSporocilo('Geslo mora imeti vsaj 4 znake.') 
+        redirect('/registracija')
+        return
+    if geslo != geslo2:
+        nastaviSporocilo('Gesli se ne ujemata.') 
+        redirect('/registracija')
+        return
+    zgostitev = hashGesla(geslo)
+    cur.execute("UPDATE clan SET uporabnisko_ime = ?, geslo = ? WHERE emso = ?", (uporabnisko_ime, zgostitev, emso))
+    response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
+    redirect('/komitenti')
+
+
+@get('/prijava')
+def prijava_get():
+    napaka = nastaviSporocilo()
+    return template('prijava.html', napaka=napaka)
+
+@route('/prijava', method='POST')
+def prijava_post():
+    uporabnisko_ime = request.forms.uporabnisko_ime
+    geslo = request.forms.geslo
+    if uporabnisko_ime is None or geslo is None:
+        nastaviSporocilo('Uporabniško ime in geslo morata biti neprazna') 
+        redirect('/prijava')
+        return
+    cur = baza.cursor()    
+    hashBaza = None
+    try: 
+        hashBaza = cur.execute("SELECT geslo FROM clan WHERE uporabnisko_ime = ?", (uporabnisko_ime, )).fetchone()
+        hashBaza = hashBaza[0]
+    except:
+        hashBaza = None
+    if hashBaza is None:
+        nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
+        redirect('/prijava')
+        return
+    if hashGesla(geslo) != hashBaza:
+        nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
+        redirect('/prijava')
+        return
+    response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
+    redirect('/komitenti')
+    
+@get('/odjava')
+def odjava_get():
+    response.delete_cookie('uporabnisko_ime')
+    redirect('/prijava')
 
 
 
