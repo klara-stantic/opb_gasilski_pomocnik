@@ -22,7 +22,7 @@ def uvoziSQL(cur, datoteka):
 # uvoz podatkov iz csv
 def uvoziCSV(cur, tabela):
     '''Funkcija za uvoz podatkov iz CSV datoteke v tabelo z istim imenom'''
-    with open("opb_gasilski_pomocnik/podatki/{0}.csv".format(tabela), encoding="utf8") as csvfile:
+    with open("podatki/{0}.csv".format(tabela), encoding="utf8") as csvfile:
         vsebina = csv.reader(csvfile)
         all_data = [vrstica for vrstica in vsebina]
         glava = all_data[0]
@@ -35,12 +35,12 @@ with psycopg2.connect(conn_string) as baza:
     cur.execute("DROP TABLE IF EXISTS opravljeni_tecaji, del_ekipe, prisotnost_na_intervencijah, prisotnost_na_vajah, vozila_na_intervencijah, ekipe_na_tekmovanjih, lastnistva_opreme, oprema_v_vozilih, skrbnik_vozila, potrebuje_tecaj CASCADE")
     cur.execute("DROP TABLE IF EXISTS osebna_oprema, skupna_oprema, ekipa, tekmovanje, tehnicni_pregledi_vozil, clan, vaja, intervencija, vozilo, tecaj CASCADE")
     cur.execute("DROP TABLE IF EXISTS funkcija, cin, kategorija_vozniskega_dovoljenja, tip_vozila, tip_intervencije, tip_tecaja, tip_tekmovanja CASCADE")
-    uvoziSQL(cur, "opb_gasilski_pomocnik/sql_code/osnovne_tabele.sql")
-    uvoziSQL(cur, "opb_gasilski_pomocnik/sql_code/relacije.sql")
+    uvoziSQL(cur, "sql_code/osnovne_tabele.sql")
+    uvoziSQL(cur, "sql_code/relacije.sql")
     csv_datoteke = ["cin", "funkcija", "kategorija_vozniskega_dovoljenja", "tip_intervencije", "tip_tecaja", "tip_tekmovanja", "tip_vozila"]
     for ime in csv_datoteke:
         uvoziCSV(cur, ime)
-
+    cur.execute("INSERT INTO clan (emso,ime,priimek,funkcija,cin) VALUES (0,'ime','priimek',1,1)")
 #delo z bazo 
 #with psycopg2.connect(conn_string) as con:
 #    cur = con.cursor()

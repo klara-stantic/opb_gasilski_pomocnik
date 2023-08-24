@@ -27,6 +27,12 @@
         </div>                        
     </nav>
     <section class="section">
+        % if napaka:
+            <div class="alert alert-danger">
+                {{napaka}}
+            </div>
+        % end
+        
         {{!base}}
   </section>
 </body>
