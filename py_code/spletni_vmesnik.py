@@ -3,6 +3,8 @@ from bottle import *
 from auth import *
 from model import *
 from datetime import date 
+from psycopg2 import *
+import bcrypt
 
 import os
 
@@ -16,7 +18,6 @@ DB_PORT = os.environ.get('POSTGRES_PORT', 5432)
 
 # Database dostop
 conn_string = "host = '{0}' dbname = '{1}' user = '{2}' password = '{3}'".format(host, dbname, user, password)
-
 
 @get('/')
 def osnovna_stran():
@@ -119,7 +120,10 @@ def popravi_clana_dokonco():
             cin_id = cur.fetchall()
     Clan.popravi_clana(emso,ime,priimek,funkcija_id[0][0],cin_id[0][0],zd)
     redirect('/clani/')
-###################################################################################################     
+    
+###############################################################################
+# vozila
+###############################################################################   
 
 
 @get('/vozila/') 
@@ -198,7 +202,9 @@ def popravi_clana_dokonco():
     Vozilo.popravi_vozilo(reg,tip_id[0][0],izpit_id[0][0],int(potniki),znamka,tehnicni)
     redirect('/vozila/')
 
-#######################################################################################
+###############################################################################
+# INTERVENCIJE
+###############################################################################
 
 @get("/intervencije/")
 def intervencije():
@@ -299,7 +305,10 @@ def odstrani_intervencijo():
     Intervencija.odstrani_intervencijo(int(id))
     redirect('/intervencije/')
       
-##################################################################
+###############################################################################
+# TEKMOVANJA
+###############################################################################
+
 @get("/tekmovanja/")
 def tekmovanje():
     with psycopg2.connect(conn_string) as baza:

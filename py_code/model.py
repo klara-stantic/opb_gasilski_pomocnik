@@ -11,7 +11,31 @@ from dataclasses import dataclass, field #, asdict
 from dataclasses_json import dataclass_json
 from datetime import date
 
+# Za namene registracij in prijav
+import bcrypt
 
+###############################################################################
+# UPORABNIKI
+###############################################################################
+
+class Uporabnik:
+    def __init__(self, uporabnisko_ime, cur):
+        sql_niz = f"SELECT emso, ime, priimek, funkcija, cin, uporabnisko_ime, geslo, administrativne_pravice, zdravniski, aktiven FROM clan WHERE uporabnisko_ime = {uporabnisko_ime}"
+        cur.execute(sql_niz)
+        res = cur.fetchone
+        if res is None:
+            raise ValueError("Takega uporabnika ni!")
+        self.emso, self.ime, self.priimek, self.funkcija, self.cin, self.uporabnisko_ime, self.geslo, self.administrativne_pravice, self.zdravniski, self.aktiven = res
+        
+    # connection za uporabnika
+    def conn_string_user(self):
+        if self.administrativne_pravice:
+            uporabnikov_profil = "administrator"
+        if not self.administrativne_pravice:
+            uporabnikov_profil = "javnost"
+        conn_str = "host = '{0}' dbname = '{1}' user = '{2}' password = '{3}'".format(host, dbname, uporabnikov_profil, self.geslo)
+        return conn_str
+    
 ###############################################################################
 # ČLANI
 ###############################################################################
@@ -24,12 +48,68 @@ class Clan:
     priimek: str 
     funkcija: int
     cin: int
+    uporabnisko_ime: str
+    geslo: str = ""
+    administrativne_pravice: bool = field(default=False)
     zdravniski: date = field(metadata={"format": "date"}, default=None)
     aktiven: bool = field(default=True)
 
     def __str__(self):
         return f"Član {self.ime} {self.priimek}"
         
+    # Validacija uporabniških imen
+    def validate_username(self):
+        # Povezava z bazo
+        conn = psycopg2.connect(conn_string)
+        cursor = conn.cursor()
+        
+        # Iskanje obstoječega uporabniškega imena
+        query = f"SELECT * FROM clan WHERE uporabnisko_ime = {self.uporabnisko_ime};"
+        cursor.execute(query)
+        fetched_data = cursor.fetchone()
+        
+        cursor.close()
+        conn.close()
+        
+        # Vrne true ali false glede na unikatnost 
+        if fetched_data:
+            return False
+        else:
+            return True
+        
+        # Mogoče bo tole uporabno za nadaljnjo implementacijo!
+        if not validate_username(self.username):
+            raise ValueError("Username must be unique")
+    
+    # Validacija gesel
+    def nastavi_geslo(self, geslo):
+        geslo = geslo.encode("utf-8")
+        sol = bcrypt.gensalt()
+        hashed_geslo = bcrypt.hashpw(geslo, sol)
+        
+        # Povezava z bazo
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        
+        sql_niz = "UPDATE clan SET geslo = %s WHERE emso = %s"
+        values = (hashed_geslo, self.emso)
+        
+        cur.execute(sql_niz, values)
+
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        self.geslo = geslo
+    
+    
+    def preveri_geslo(self, vneseno_geslo):
+        # zgostitev je nastavljeno geslo z zgornjo funkcijo!
+        vneseno_geslo = vneseno_geslo.encode("utf-8")
+        staro_geslo = self.geslo.encode("utf-8")
+        return bcrypt.checkpw(vneseno_geslo, staro_geslo)
+        
+
     # Metoda, s katero preko emsota dostopamo do clanov
     @classmethod
     def get_clan(cls, emso):
@@ -51,6 +131,45 @@ class Clan:
         else:
             print("Takega člana ne najdem!")
             return None
+    
+    
+    def spremeni_geslo(self, staro_geslo_vnos, novo_geslo):
+        # Poisci clana
+        clan = Clan.get_clan(self.emso)
+        
+        #Ustvarjanje povezave
+        baza = psycopg2.connect(conn_string)
+        cur = baza.cursor()
+        
+        # Če gesla še ni, potem vrni funkcijo nastavi_geslo
+        if clan.geslo == "":
+            clan.nastavi_geslo(novo_geslo)
+                # Preveri, če pozna staro geslo, tedaj izvedi menjavo
+        elif clan.preveri_geslo(staro_geslo_vnos):
+            clan.nastavi_geslo(novo_geslo)
+        else:
+            print("Staro geslo ni bilo pravilno!")
+        
+        
+    def spremeni_username(self, new_username):
+        # Poisci clana
+        clan = Clan.get_clan(self.emso)
+        
+        #Ustvarjanje povezave
+        baza = psycopg2.connect(conn_string)
+        cur = baza.cursor()
+        
+        sql_niz = "UPDATE clan SET username = %s WHERE emso = {self.emso}"
+        values = (new_username)
+        
+        cur.execute(sql_niz, values)
+        print(f"Popravljeno uporabniško ime člana z emšo: {clan.emso}")
+
+        baza.commit()
+        cur.close()
+        baza.close()
+        
+        
     
     # TO SAMO SPREMENI AKTIVNOST
     # Ob priliki je treba nardit dve loceni funkciji za pretvorbo IN uskladit zs spletnim vmesnikom
@@ -97,8 +216,16 @@ class Clan:
         baza.commit()
         cur.close()
         baza.close()
+        
+        clan.ime = novo_ime
+        clan.priimek = nov_priimek
+        clan.cin = nov_cin
+        clan.funkcija = nova_funkcija
+        
+        if nov_zd:
+            clan.zdravniski = nov_zd
     
-    # POZOR! To ne dela z dekoratorji @staticmethod ali @classmethod
+    
     def dodaj_clana(self):
         # Poisci clana
         clan = Clan.get_clan(self.emso)
@@ -106,7 +233,11 @@ class Clan:
         if clan:
             clan.spremeni_aktivnost(self.emso)
             clan.popravi_clana(self.emso, novo_ime=self.ime, nov_priimek=self.priimek, nova_funkcija=self.funkcija, nov_cin=self.cin, nov_zd=self.zdravniski)
-            return "Ta član že obstaja"
+            raise ValueError("Ta član že obstaja!")
+        
+        # Zahtevamo unikatnost uporabniskega imena
+        if not self.validate_username():
+            raise ValueError("Uporabniško ime mora biti unikatno!")
         
         #Ustvarjanje povezave
         baza = psycopg2.connect(conn_string)
@@ -114,11 +245,11 @@ class Clan:
         
         if self.zdravniski:        
         #SQL podatki
-            sql_niz = "INSERT INTO clan (emso, ime, priimek, funkcija, cin, zdravniski) VALUES (%s, %s, %s, %s,%s,%s);"
-            values = (self.emso, self.ime, self.priimek, self.funkcija, self.cin, self.zdravniski)
+            sql_niz = "INSERT INTO clan (emso, ime, priimek, funkcija, cin, uporabnisko_ime, geslo, administrativne_pravice, zdravniski) VALUES (%s, %s, %s, %s, %s, %s, %s,%s,%s);"
+            values = (self.emso, self.ime, self.priimek, self.funkcija, self.cin, self.uporabnisko_ime, self.geslo, self.administrativne_pravice, self.zdravniski)
         else:
-            sql_niz = "INSERT INTO clan (emso, ime, priimek, funkcija, cin) VALUES (%s, %s, %s, %s,%s);"
-            values = (self.emso, self.ime, self.priimek, self.funkcija, self.cin)
+            sql_niz = "INSERT INTO clan (emso, ime, priimek, funkcija, cin, uporabnisko_ime, geslo, administrativne_pravice) VALUES (%s, %s, %s, %s, %s, %s, %s,%s);"
+            values = (self.emso, self.ime, self.priimek, self.funkcija, self.cin, self.uporabnisko_ime, self.geslo, self.administrativne_pravice)
         
         try:
             cur.execute(sql_niz, values)
