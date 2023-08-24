@@ -14,8 +14,8 @@ CREATE TABLE clan (
     priimek TEXT NOT NULL,
     funkcija INTEGER NOT NULL REFERENCES funkcija(id_funkcija), 
     cin INTEGER NOT NULL REFERENCES cin(id_cin),
-    uporabnisko_ime CHAR UNIQUE,
-    geslo CHAR,
+    uporabnisko_ime TEXT UNIQUE,
+    geslo TEXT,
     administrativne_pravice BOOLEAN NOT NULL DEFAULT false,
     zdravniski DATE, 
     aktiven BOOLEAN NOT NULL DEFAULT true

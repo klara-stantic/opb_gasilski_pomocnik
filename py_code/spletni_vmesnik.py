@@ -18,7 +18,7 @@ DB_PORT = os.environ.get('POSTGRES_PORT', 5432)
 
 # Database dostop
 conn_string = "host = '{0}' dbname = '{1}' user = '{2}' password = '{3}'".format(host, dbname, user, password)
-baza = connect(conn_string, isolation_level=None)
+baza = psycopg2.connect(conn_string)
 cur = baza.cursor()
 # cur.execute("PRAGMA foreign_keys = ON;") nevem kaj ta rec dela
 
@@ -43,23 +43,23 @@ def nastaviSporocilo(sporocilo = None):
 
 def preveriUporabnika(): 
     uporabnisko_ime = request.get_cookie("uporabnisko_ime", secret=skrivnost)
-    if uporabnisko_ime:
-        cur = baza.cursor()    
-        uporabni = None
-        try: 
-            uporabnik = cur.execute("SELECT * FROM clan WHERE uporabnisko_ime = ?", (uporabnisko_ime, )).fetchone()
-        except:
+    with psycopg2.connect(conn_string) as baza:
+        if uporabnisko_ime:
+            cur = baza.cursor()    
             uporabnik = None
-        if uporabnik: 
-            return uporabnik
+    
+            try: 
+                uporabnik = cur.execute("SELECT * FROM clan WHERE uporabnisko_ime = %s", (uporabnisko_ime, ))
+                uporabnik = cur.fetchone()
+            except:
+                uporabnik = None
+            if uporabnik: 
+                return uporabnik
     redirect('/prijava')
 
 @route("/static/<filename:path>")
 def static(filename):
     return static_file(filename, root=static_dir)
-
-
-
 
 @get('/')
 def osnovna_stran():
@@ -133,10 +133,10 @@ def nov_clan_post():
             cin_id = cur.execute(f"""SELECT id_cin FROM cin WHERE cin = %s""",[cin])
             cin_id = cur.fetchall()
     try:
-        nov = Clan(int(emso),ime,priimek,funkcija_id[0][0],cin_id[0][0],zdravniski)
+        nov = Clan(emso=int(emso),ime=ime,priimek=priimek,funkcija=funkcija_id[0][0],cin=cin_id[0][0],zdravniski=zdravniski)
         nov.dodaj_clana()
     except:
-         nastaviSporocilo("ta emšo že obstaja")
+          nastaviSporocilo("ta emšo že obstaja")
     redirect('/clani/')
 
 @post('/odstrani_clana/')
@@ -176,10 +176,10 @@ def popravi_clana_dokonco():
             funkcija_id = cur.fetchall()
             cin_id = cur.execute(f"""SELECT id_cin FROM cin WHERE cin = %s""",[cin])
             cin_id = cur.fetchall()
-    try:
-        Clan.popravi_clana(emso,ime,priimek,funkcija_id[0][0],cin_id[0][0],zd)
-    except:
-         nastaviSporocilo("popravljanje podatkov ni uspelo")
+    #try:
+    Clan.popravi_clana(int(emso),ime,priimek,funkcija_id[0][0],cin_id[0][0],zd)
+    #except:
+         #nastaviSporocilo("popravljanje podatkov ni uspelo")
     redirect('/clani/')
 ###################################################################################################     
 
@@ -555,36 +555,38 @@ def registracija_get():
 
 @route('/registracija', method='POST')
 def registracija_post():
-    emso = request.forms.emso
-    uporabnisko_ime = request.forms.uporabnisko_ime
-    geslo = request.forms.geslo
-    geslo2 = request.forms.geslo2
+    emso = request.forms.getunicode('emso')
+    uporabnisko_ime = request.forms.getunicode('uporabnisko_ime')
+    geslo = request.forms.getunicode('geslo')
+    geslo2 = request.forms.getunicode('geslo2')
     if emso is None or uporabnisko_ime is None or geslo is None or geslo2 is None:
         nastaviSporocilo('Registracija ni možna! Prosim, nastavi vsa obvezna polja.') 
         redirect('/registracija')
         return
-    cur = baza.cursor()    
-    uporabnik = None
-    try: 
-        uporabnik = cur.execute("SELECT * FROM clan WHERE emso = ?", (emso, )).fetchone()
-    except:
+    with psycopg2.connect(conn_string) as baza:
+        cur = baza.cursor()    
         uporabnik = None
-    if uporabnik is None:
-        nastaviSporocilo('Registracija ni možna! Člana s to EMŠO ni v bazi.') 
-        redirect('/registracija')
-        return
-    if len(geslo) < 4:
-        nastaviSporocilo('Geslo mora imeti vsaj 4 znake.') 
-        redirect('/registracija')
-        return
-    if geslo != geslo2:
-        nastaviSporocilo('Gesli se ne ujemata.') 
-        redirect('/registracija')
-        return
-    zgostitev = hashGesla(geslo)
-    cur.execute("UPDATE clan SET uporabnisko_ime = ?, geslo = ? WHERE emso = ?", (uporabnisko_ime, zgostitev, emso))
-    response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
-    redirect('/komitenti')
+        try: 
+            uporabnik = cur.execute(f"SELECT * FROM clan WHERE emso = {emso}")
+            uporabnik = cur.fetchone()
+        except:
+            uporabnik = None
+        if uporabnik is None:
+            nastaviSporocilo('Registracija ni možna! Člana s to EMŠO ni v bazi.') 
+            redirect('/registracija')
+            return
+        if len(geslo) < 4:
+            nastaviSporocilo('Geslo mora imeti vsaj 4 znake.') 
+            redirect('/registracija')
+            return
+        if geslo != geslo2:
+            nastaviSporocilo('Gesli se ne ujemata.') 
+            redirect('/registracija')
+            return
+        zgostitev = hashGesla(geslo)
+        cur.execute(f"UPDATE clan SET uporabnisko_ime = %s, geslo = %s WHERE emso = %s", (uporabnisko_ime, zgostitev, int(emso)))
+        response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
+    redirect('/')
 
 
 @get('/prijava')
@@ -600,13 +602,15 @@ def prijava_post():
         nastaviSporocilo('Uporabniško ime in geslo morata biti neprazna') 
         redirect('/prijava')
         return
-    cur = baza.cursor()    
-    hashBaza = None
-    try: 
-        hashBaza = cur.execute("SELECT geslo FROM clan WHERE uporabnisko_ime = ?", (uporabnisko_ime, )).fetchone()
-        hashBaza = hashBaza[0]
-    except:
+    with psycopg2.connect(conn_string) as baza:
+        cur = baza.cursor()    
         hashBaza = None
+        try: 
+            hashBaza = cur.execute("SELECT geslo FROM clan WHERE uporabnisko_ime = %s", (uporabnisko_ime, ))
+            hashBaza = cur.fetchone()
+            hashBaza = hashBaza[0]
+        except:
+            hashBaza = None
     if hashBaza is None:
         nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
         redirect('/prijava')
@@ -616,7 +620,7 @@ def prijava_post():
         redirect('/prijava')
         return
     response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
-    redirect('/komitenti')
+    redirect('/')
     
 @get('/odjava')
 def odjava_get():
@@ -626,8 +630,5 @@ def odjava_get():
 
 
 ###################################################################################33
-# Priklop na bazo
-baza = psycopg2.connect(conn_string)
-
 # Poženemo strežnik
 run(host='localhost', port=8080, reloader=True) 

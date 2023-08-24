@@ -26,8 +26,8 @@ class Clan:
     priimek: str 
     funkcija: int
     cin: int
-    uporabnisko_ime: str = field(init = False)
-    geslo: str = field(init = False)
+    uporabnisko_ime: str = field(init = False, default=None)
+    geslo: str = field(init = False, default=None)
     administrativne_pravice: bool = field(default=False)
     zdravniski: date = field(metadata={"format": "date"}, default=None)
     aktiven: bool = field(default=True)
@@ -205,22 +205,24 @@ class Clan:
             clan.popravi_clana(self.emso, novo_ime=self.ime, nov_priimek=self.priimek, nova_funkcija=self.funkcija, nov_cin=self.cin, nov_zd=self.zdravniski)
             raise ValueError("Ta član že obstaja!")
         
-        # Zahtevamo unikatnost uporabniskega imena
-        if not self.validate_username():
-            raise ValueError("Uporabniško ime mora biti unikatno!")
-        
         #Ustvarjanje povezave
         baza = psycopg2.connect(conn_string)
         cur = baza.cursor()
         
-        if self.zdravniski:        
         #SQL podatki
+        if self.uporabnisko_ime and self.zdravniski:       
             sql_niz = "INSERT INTO clan (emso, ime, priimek, funkcija, cin, uporabnisko_ime, geslo, administrativne_pravice, zdravniski) VALUES (%s, %s, %s, %s, %s, %s, %s,%s,%s);"
             values = (self.emso, self.ime, self.priimek, self.funkcija, self.cin, self.uporabnisko_ime, self.geslo, self.administrativne_pravice, self.zdravniski)
-        else:
+        elif self.uporabnisko_ime and not self.zdravniski:
             sql_niz = "INSERT INTO clan (emso, ime, priimek, funkcija, cin, uporabnisko_ime, geslo, administrativne_pravice) VALUES (%s, %s, %s, %s, %s, %s, %s,%s);"
             values = (self.emso, self.ime, self.priimek, self.funkcija, self.cin, self.uporabnisko_ime, self.geslo, self.administrativne_pravice)
-        
+        elif not self.uporabnisko_ime and self.zdravniski:
+            sql_niz = "INSERT INTO clan (emso, ime, priimek, funkcija, cin, administrativne_pravice, zdravniski) VALUES (%s, %s, %s, %s, %s,%s,%s);"
+            values = (self.emso, self.ime, self.priimek, self.funkcija, self.cin, self.administrativne_pravice, self.zdravniski)
+        else:
+            sql_niz = "INSERT INTO clan (emso, ime, priimek, funkcija, cin, administrativne_pravice) VALUES (%s, %s, %s, %s, %s,%s);"
+            values = (self.emso, self.ime, self.priimek, self.funkcija, self.cin, self.administrativne_pravice)
+       
         try:
             cur.execute(sql_niz, values)
             baza.commit()
