@@ -20,7 +20,30 @@ conn_string = "host = '{0}' dbname = '{1}' user = '{2}' password = '{3}'".format
 
 @get('/')
 def osnovna_stran():
-    return template('osnovna_stran.html')
+    with psycopg2.connect(conn_string) as baza:
+            cur = baza.cursor()
+            clani = cur.execute("""SELECT ime,priimek FROM clan WHERE aktiven = true AND (CURRENT_DATE-zdravniski) >=630 ORDER BY priimek""")
+            clani = cur.fetchall()
+            clani_n = cur.execute("""SELECT ime,priimek FROM clan WHERE aktiven = true AND zdravniski IS NULL ORDER BY priimek""")
+            clani_n = cur.fetchall()
+            vozila = cur.execute("""SELECT tip_vozila,znamka FROM vozilo WHERE aktivno = true AND (CURRENT_DATE-tehnicni) >=325""")
+            vozila = cur.fetchall()
+            vozila_n = cur.execute("""SELECT tip_vozila,znamka FROM vozilo WHERE aktivno = true AND tehnicni IS NULL""")
+            vozila_n = cur.fetchall()
+            tek = cur.execute("""SELECT * FROM tekmovanje WHERE (datum - CURRENT_DATE) BETWEEN 0 AND 60""")
+            tek = cur.fetchall()
+            vaje = cur.execute("""SELECT * FROM vaja WHERE (datum - CURRENT_DATE) BETWEEN 0 AND 60 """)
+            vaje = cur.fetchall()
+            tip_vaje = cur.execute("""SELECT * FROM tip_intervencije""")
+            tip_vaje = cur.fetchall()
+            tip_tek = cur.execute("""SELECT * FROM tip_tekmovanja""")
+            tip_tek = cur.fetchall()
+            tip_v = cur.execute("""SELECT * FROM tip_vozila""")
+            tip_v = cur.fetchall()
+    return template('osnovna_stran.html',clani_n=clani_n,vozila_n=vozila_n,tip_v=tip_v,clani=clani,vozila=vozila,tek=tek,vaje=vaje,tip_tek=tip_tek,tip_vaje=tip_vaje)
+
+
+###############################################################################
 @get('/clani/') 
 def prikaz_clanov():
     with psycopg2.connect(conn_string) as baza:
