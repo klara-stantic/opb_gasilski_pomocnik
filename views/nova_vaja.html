@@ -24,7 +24,9 @@
       <div class="field">
         <label class="label">Datum</label>
         <div class="control has-icons-left">
-            <input class="input" name="datum" type="date">
+            <input class="input" name="datum" type="date" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Dodaj datum')">
             <span class="icon is-small is-left">
                 <i class="fas fa-user"></i>
             </span>

@@ -13,7 +13,9 @@
     <div class="field">
         <label class="label">ime</label>
         <div class="control has-icons-left">
-            <input class="input" name="ime" type="text" value="{{clan[0][1]}}" >
+            <input class="input" name="ime" type="text" value="{{clan[0][1]}}" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Ime mora biti dodano')">
             <span class="icon is-small is-left">
                 <i class="fas fa-user"></i>
             </span>
@@ -22,7 +24,9 @@
     <div class="field">
         <label class="label">priimek</label>
         <div class="control has-icons-left">
-            <input class="input" name="priimek" type="text" value="{{clan[0][2]}}" >
+            <input class="input" name="priimek" type="text" value="{{clan[0][2]}}" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Priimek mora biti dodan')">
             <span class="icon is-small is-left">
                 <i class="fas fa-user"></i>
             </span>

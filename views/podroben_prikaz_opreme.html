@@ -51,7 +51,9 @@
     <div class="field">
         <label class="label">Dodaj opremo</label>
         <div class="control has-icons-left">
-            <input class="input" name="oprema" type="text" >
+            <input class="input" name="oprema" type="text" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Dodaj opremo')">
             <span class="icon is-small is-left">
                 <i class="fas fa-user"></i>
             </span>

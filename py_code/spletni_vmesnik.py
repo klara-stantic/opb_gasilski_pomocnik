@@ -48,7 +48,7 @@ def osnovna_stran():
 def prikaz_clanov():
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
-            clani = cur.execute("""SELECT * FROM clan WHERE aktiven = true  ORDER BY ime""")
+            clani = cur.execute("""SELECT emso,ime,priimek,funkcija,cin,zdravniski,aktiven FROM clan WHERE aktiven = true  ORDER BY ime""")
             clani = cur.fetchall()
             fun = cur.execute("""SELECT * FROM funkcija""")
             fun = cur.fetchall()
@@ -235,7 +235,7 @@ def post_dodaj_int():
 def dodaj_clane_int():
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()
-        clani = cur.execute("""SELECT * FROM clan WHERE aktiven=true ORDER BY priimek,ime """)
+        clani = cur.execute("""SELECT emso,ime,priimek,funkcija,cin,zdravniski,aktiven FROM clan WHERE aktiven=true ORDER BY priimek,ime """)
         clani = cur.fetchall()
         vozila = cur.execute("""SELECT * FROM vozilo WHERE aktivno=true ORDER BY tip_vozila """)
         vozila = cur.fetchall()

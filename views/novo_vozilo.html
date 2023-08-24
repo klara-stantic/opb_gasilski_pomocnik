@@ -10,7 +10,9 @@
     <div class="field">
         <label class="label"> Registerska številka</label>
         <div class="control has-icons-left">
-            <input class="input" name="reg" type="text" >
+            <input class="input" name="reg" type="text" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Registerska številka mora biti dodana')">
             <span class="icon is-small is-left">
                 <i class="fas fa-user"></i>
             </span>
@@ -18,7 +20,9 @@
     <div class="field">
         <label class="label">Znamka</label>
         <div class="control has-icons-left">
-            <input class="input" name="znamka" type="text" >
+            <input class="input" name="znamka" type="text" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Znamka mora biti dodana')">
             <span class="icon is-small is-left">
                 <i class="fas fa-user"></i>
             </span>
@@ -26,7 +30,9 @@
     <div class="field">
         <label class="label">Število potnikov</label>
         <div class="control has-icons-left">
-            <input class="input" name="st_potnikov" type="number">
+            <input class="input" name="st_potnikov" type="number"required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Polje ne sme biti prazno in mora biti število')">
             <span class="icon is-small is-left">
                 <i class="fas fa-user"></i>
             </span>
