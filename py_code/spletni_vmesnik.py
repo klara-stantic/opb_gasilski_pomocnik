@@ -397,9 +397,8 @@ def oprema():
             clani = cur.fetchall()
     return template("prikaz_clanov_oprema.html",clani=clani)
 
-@route("/preusmeritev_pregled_opreme/", method='POST')
-def prikaz_opreme():
-    emso_za_prikaz = request.forms.getunicode('emso')
+@get("/preusmeritev_pregled_opreme/<emso_za_prikaz>/")
+def prikaz_opreme(emso_za_prikaz):
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()
         oprema_clana = cur.execute(f"""SELECT * FROM osebna_oprema WHERE emso_clana = {emso_za_prikaz} """)
@@ -416,13 +415,15 @@ def dodaj_opremo_clanau():
     oprema = request.forms.getunicode('oprema')
     nov = Oprema(int(emso_za_dodajo),oprema)
     nov.dodaj_opremo()
-    redirect('/oprema/')
+    redirect(f'/preusmeritev_pregled_opreme/{emso_za_dodajo}/')
 
 
 @route("/odstrani_opremo/", method='POST')
 def prikaz_opreme():
     id_opreme = request.forms.getunicode('id_opreme')
-    return id_opreme
+    emso =request.forms.getunicode('emso')
+    Oprema.odstrani_opremo(int(id_opreme))
+    redirect(f"/preusmeritev_pregled_opreme/{emso}/")
 
 
 

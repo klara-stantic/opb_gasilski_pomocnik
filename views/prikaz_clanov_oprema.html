@@ -24,10 +24,10 @@
                     <th>{{priimek}}</th>
                     <th>{{ime}}</th>
                   <th>
-                    <form method="POST" action="/preusmeritev_pregled_opreme/">
-                      <input type="hidden" id="emso" name="emso" value="{{emso}}">
-                      <button class="button is-info">Poglej opremo</button>
-                    </form>
+                    
+                    <a href="/preusmeritev_pregled_opreme/{{emso}}/" class="button is-info" name="id_kategorije" value="{{emso}}">
+                        Poglej opremo </a>
+                    
                   </th>
               %end
             </tbody>   
