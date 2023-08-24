@@ -20,18 +20,36 @@ DB_PORT = os.environ.get('POSTGRES_PORT', 5432)
 conn_string = "host = '{0}' dbname = '{1}' user = '{2}' password = '{3}'".format(host, dbname, user, password)
 
 @get('/')
-def osnovna_stran():      
-    return template('osnovna_stran.html')
+def osnovna_stran():
+    with psycopg2.connect(conn_string) as baza:
+            cur = baza.cursor()
+            clani = cur.execute("""SELECT ime,priimek FROM clan WHERE aktiven = true AND (CURRENT_DATE-zdravniski) >=630 ORDER BY priimek""")
+            clani = cur.fetchall()
+            clani_n = cur.execute("""SELECT ime,priimek FROM clan WHERE aktiven = true AND zdravniski IS NULL ORDER BY priimek""")
+            clani_n = cur.fetchall()
+            vozila = cur.execute("""SELECT tip_vozila,znamka FROM vozilo WHERE aktivno = true AND (CURRENT_DATE-tehnicni) >=325""")
+            vozila = cur.fetchall()
+            vozila_n = cur.execute("""SELECT tip_vozila,znamka FROM vozilo WHERE aktivno = true AND tehnicni IS NULL""")
+            vozila_n = cur.fetchall()
+            tek = cur.execute("""SELECT * FROM tekmovanje WHERE (datum - CURRENT_DATE) BETWEEN 0 AND 60""")
+            tek = cur.fetchall()
+            vaje = cur.execute("""SELECT * FROM vaja WHERE (datum - CURRENT_DATE) BETWEEN 0 AND 60 """)
+            vaje = cur.fetchall()
+            tip_vaje = cur.execute("""SELECT * FROM tip_intervencije""")
+            tip_vaje = cur.fetchall()
+            tip_tek = cur.execute("""SELECT * FROM tip_tekmovanja""")
+            tip_tek = cur.fetchall()
+            tip_v = cur.execute("""SELECT * FROM tip_vozila""")
+            tip_v = cur.fetchall()
+    return template('osnovna_stran.html',clani_n=clani_n,vozila_n=vozila_n,tip_v=tip_v,clani=clani,vozila=vozila,tek=tek,vaje=vaje,tip_tek=tip_tek,tip_vaje=tip_vaje)
+
 
 ###############################################################################
-# ČLANI
-###############################################################################
-
 @get('/clani/') 
 def prikaz_clanov():
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
-            clani = cur.execute("""SELECT * FROM clan WHERE aktiven = true""")
+            clani = cur.execute("""SELECT emso,ime,priimek,funkcija,cin,zdravniski,aktiven FROM clan WHERE aktiven = true  ORDER BY ime""")
             clani = cur.fetchall()
             fun = cur.execute("""SELECT * FROM funkcija""")
             fun = cur.fetchall()
@@ -223,7 +241,7 @@ def post_dodaj_int():
 def dodaj_clane_int():
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()
-        clani = cur.execute("""SELECT * FROM clan WHERE aktiven=true ORDER BY priimek,ime """)
+        clani = cur.execute("""SELECT emso,ime,priimek,funkcija,cin,zdravniski,aktiven FROM clan WHERE aktiven=true ORDER BY priimek,ime """)
         clani = cur.fetchall()
         vozila = cur.execute("""SELECT * FROM vozilo WHERE aktivno=true ORDER BY tip_vozila """)
         vozila = cur.fetchall()
@@ -336,7 +354,7 @@ def odstrani_tekmovanje():
 def vaje():
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
-            vaje = cur.execute("""SELECT id,obvezna,datum,tip_vaje,ime,priimek FROM vaja JOIN clan ON vodja=emso""")
+            vaje = cur.execute("""SELECT id,obvezna,tip_vaje,datum,ime,priimek FROM vaja JOIN clan ON vodja=emso""")
             vaje = cur.fetchall()
             tip = cur.execute("""SELECT * FROM tip_intervencije""")
             tip= cur.fetchall()
@@ -373,7 +391,54 @@ def post_dodaj_vajo():
     nov.dodaj_vajo()
     redirect('/vaje/')
 
+@route('/odstrani_vajo/', method='POST')
+def odstrani_vajo():
+     id = request.forms.getunicode('id_vaje')
+     Vaja.odstrani_vajo(int(id))
+     redirect("/vaje/")
+
 ###########################################################################
+@get("/oprema/")
+def oprema():
+    with psycopg2.connect(conn_string) as baza:
+            cur = baza.cursor()
+            clani = cur.execute("""SELECT emso,ime,priimek FROM clan WHERE aktiven=true ORDER BY priimek,ime""")
+            clani = cur.fetchall()
+    return template("prikaz_clanov_oprema.html",clani=clani)
+
+@get("/preusmeritev_pregled_opreme/<emso_za_prikaz>/")
+def prikaz_opreme(emso_za_prikaz):
+    with psycopg2.connect(conn_string) as baza:
+        cur = baza.cursor()
+        oprema_clana = cur.execute(f"""SELECT * FROM osebna_oprema WHERE emso_clana = {emso_za_prikaz} """)
+        oprema_clana = cur.fetchall()
+        clan = cur.execute(f"""SELECT emso,ime,priimek FROM clan WHERE emso ={emso_za_prikaz} """)
+        clan = cur.fetchall()
+    
+    return template('podroben_prikaz_opreme.html',oprema_clana=oprema_clana,clan=clan)
+
+
+@route("/dodaj_opremo/", method='POST')
+def dodaj_opremo_clanau():
+    emso_za_dodajo = request.forms.getunicode('emso')
+    oprema = request.forms.getunicode('oprema')
+    nov = Oprema(int(emso_za_dodajo),oprema)
+    nov.dodaj_opremo()
+    redirect(f'/preusmeritev_pregled_opreme/{emso_za_dodajo}/')
+
+
+@route("/odstrani_opremo/", method='POST')
+def prikaz_opreme():
+    id_opreme = request.forms.getunicode('id_opreme')
+    emso =request.forms.getunicode('emso')
+    Oprema.odstrani_opremo(int(id_opreme))
+    redirect(f"/preusmeritev_pregled_opreme/{emso}/")
+
+
+
+
+
+###################################################################################33
 # Priklop na bazo
 baza = psycopg2.connect(conn_string)
 

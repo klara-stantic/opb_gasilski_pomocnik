@@ -11,7 +11,9 @@
     <div class="field">
         <label class="label">Znamka</label>
         <div class="control has-icons-left">
-            <input class="input" name="znamka" type="text" value="{{vozilo[0][4]}}" >
+            <input class="input" name="znamka" type="text" value="{{vozilo[0][4]}}" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Znamka mora biti dodana')">
             <span class="icon is-small is-left">
                 <i class="fas fa-user"></i>
             </span>
@@ -19,7 +21,9 @@
     <div class="field">
         <label class="label">Število potnikov</label>
         <div class="control has-icons-left">
-            <input class="input" name="st_potnikov" type="number" value="{{vozilo[0][3]}}">
+            <input class="input" name="st_potnikov" type="number" value="{{vozilo[0][3]}}" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Polje ne sme biti prazno in mora biti število')">
             <span class="icon is-small is-left">
                 <i class="fas fa-user"></i>
             </span>

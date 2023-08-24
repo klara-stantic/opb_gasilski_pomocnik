@@ -32,6 +32,11 @@
                 <span> <b>TEKMOVANJA</b></span>
             </a>
         </li>
+        <li>
+          <a href="/oprema/">
+              <span> <b>OPREMA</b></span>
+          </a>
+      </li>
     </ul>
 </div>
 
@@ -41,31 +46,70 @@
   }
   </style>
 
-<table class="center">
-    <tr>
-      <th><article class="message is-info">
-        <div class="message-header">
-          <p>Prihodnji tehnični</p>
+<div class="columns">
+  <div class="column">
+    <article class="message is-info">
+      <div class="message-header">
+        <p>Prihodnji tehnični</p>
+      </div>
+      <div class="message-body">
+        <ul>
+          %for tip,znamka in vozila:
+          <li> <b>-{{tip_v[tip - 1 ][1]}} {{znamka}}</b> </li>
+          %end
+        </ul>
+        <ul>
+          ŠE BREZ TEHNIČNEGA:
+          %for tip,znamka in vozila_n:
+          <li> <b>-{{tip_v[tip - 1 ][1]}} {{znamka}}</b> </li>
+          %end
+        </ul>
+      </div>
+    </article>
+  </div>
+  <div class="column">
+    <article class="message is-info">
+      <div class="message-header">
+        <p>Prihodni zdravniški</p>
+      </div>
+      <div class="message-body">
+        <ul>
+          %for ime,priimek in clani:
+          <li> <b>-{{priimek}} {{ime}}</b> </li>
+          %end
+        </ul>
+        <ul>
+          ŠE BREZ ZDRAVNIŠKEGA:
+          %for ime,priimek in clani_n:
+          <li> <b>-{{priimek}} {{ime}}</b> </li>
+          %end
+        </ul>
+        
+      </div>
+    </article>
+  </div>
+  <div class="column">
+    <article class="message is-info">
+      <div class="message-header">
+        <p>Prihodne vaje in tekmovanja</p>
+      </div>
+      <div class="message-body">
+        <ul>
+          VAJE:
+          %for id,obvezna,tip,vodja,datum in vaje:
+            <li><b>-{{tip_vaje[tip - 1][1]}}</b> dne <b>{{datum}}</b></li>
+          %end
+        </ul>
+
+        <ul>
+          TEKMOVANJA:
+          %for id,lokacija,tip,datum in tek:
+            <li><b>-{{tip_tek[tip - 1][1]}}</b> na lokaciji <b>{{lokacija}}</b> dne <b>{{datum}}</b></li>
+          %end
+        </ul>
         </div>
-        <div class="message-body">
-           Izpis vozil,ki morajo iti v roku 3 mesecev na tehnični
-        </div>
-      </article></th>
-      <th><article class="message is-info">
-        <div class="message-header">
-          <p>Prihodni zdravniški</p>
-        </div>
-        <div class="message-body">
-            Prihajajoči zdravniški pregledi
-        </div>
-      </article></th>
-      <th><article class="message is-info">
-        <div class="message-header">
-          <p>Prihodne vaje in tekmovanja</p>
-        </div>
-        <div class="message-body">
-          <p>Vaje in tekmovanja, ki bodo v roku 2 mesecev</p>
-        </div>
-      </article></th>
-    </tr>
-  </table>
+        
+    </article>
+  </div>
+
+</div>

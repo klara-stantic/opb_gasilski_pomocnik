@@ -586,7 +586,7 @@ class Vaja:
         
        #SQL podatki
         sql_niz = "INSERT INTO vaja (obvezna, tip_vaje, vodja, datum) VALUES (%s, %s, %s, %s);"
-        values = (self.obvezna,self.tip_vaje,self.vodjaself.datum)
+        values = (self.obvezna,self.tip_vaje,self.vodja,self.datum)
         
         try:
             cur.execute(sql_niz, values)
@@ -694,3 +694,80 @@ class Tekomvanje:
         cur.close()
         baza.close()
 
+############################################################################################################
+
+#OPREMA
+
+############################################################################################################
+
+@dataclass_json
+@dataclass
+class Oprema:
+
+    id: int= field(init=False)
+    emso_clana: int
+    tip_opreme: str
+
+    def __str__(self):
+        niz = f"oprema tipa {self.tip_opreme} lastnika {self.emso_clana}"
+        return niz
+    # Metoda, s katero preko id dostopamo do tekmovanja
+    @classmethod
+    def get_oprema(cls,id):
+        # Povezava z bazo
+        conn = psycopg2.connect(conn_string)
+        cursor = conn.cursor()
+
+        query = f"SELECT * FROM osebna_oprema WHERE id = {id};"
+        cursor.execute(query)
+        fetched_data = cursor.fetchone()
+
+        cursor.close()
+        conn.close()
+
+        if fetched_data:
+            column_names = [desc[0] for desc in cursor.description]
+            data_dict = dict(zip(column_names, fetched_data))
+            return cls(**data_dict)
+        else:
+            print("Take opreme ne najdem!")
+            return None
+        
+    # POZOR! To ne dela z dekoratorji @staticmethod ali @classmethod
+    def dodaj_opremo(self):
+        #Ustvarjanje povezave
+        baza = psycopg2.connect(conn_string)
+        cur = baza.cursor()
+        
+       #SQL podatki
+        sql_niz = "INSERT INTO osebna_oprema (emso_clana,tip_opreme) VALUES (%s, %s);"
+        values = (self.emso_clana,self.tip_opreme)
+        
+        try:
+            cur.execute(sql_niz, values)
+            # Pridobiti želimo ustvarjen id!
+            cur.execute("SELECT currval(pg_get_serial_sequence('osebna_oprema', 'id'));")
+            generated_id = cur.fetchone()[0]  # Generiran id
+            self.id = generated_id # Shranimo id
+            baza.commit()
+            cur.close()
+            baza.close()
+            return "Shranjeno"
+            
+        except ValueError:
+            cur.close()
+            baza.close()
+            return "Napaka"
+        
+    @staticmethod     
+    def odstrani_opremo(id):
+        #Ustvarjanje povezave
+        baza = psycopg2.connect(conn_string)
+        cur = baza.cursor()
+
+        sql_niz = f"DELETE FROM osebna_oprema WHERE id = {id}"
+        cur.execute(sql_niz)
+    
+        baza.commit()
+        cur.close()
+        baza.close()

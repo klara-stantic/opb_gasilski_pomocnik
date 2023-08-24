@@ -15,7 +15,7 @@ CREATE TABLE clan (
     funkcija INTEGER NOT NULL REFERENCES funkcija(id_funkcija), 
     cin INTEGER NOT NULL REFERENCES cin(id_cin),
     uporabnisko_ime TEXT NOT NULL UNIQUE,
-    geslo BLOB NOT NULL,
+    geslo TEXT NOT NULL,
     administrativne_pravice BOOLEAN NOT NULL DEFAULT false,
     zdravniski DATE, 
     aktiven BOOLEAN NOT NULL DEFAULT true
@@ -83,7 +83,7 @@ CREATE TABLE vaja (
     obvezna BOOLEAN NOT NULL, 
     tip_vaje INTEGER NOT NULL REFERENCES tip_intervencije(id_tipa_intervencije), 
     vodja INTEGER REFERENCES clan(emso),
-    datum DATE NOT NULL,
+    datum DATE NOT NULL
 );
 
 CREATE TABLE tip_tekmovanja (

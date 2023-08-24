@@ -5,33 +5,63 @@
     }
   </style>
 
-  <h4 class="title is-4">OPREMA ČLANOV</h4>
+  <h4 class="title is-5">OPREMA ČLANOV</h4>
 
-  <form action="/oprema/">
+  <table>
+
     <td>
-        <div class="buttons">
-            <button class="button is-info">Nazaj</button>
-          </div>
+        <form action="/oprema/">
+            <td>
+                <div class="buttons">
+                    <button class="button is-info">Nazaj</button>
+                  </div>
+            </td>
+          </form>
     </td>
+</table>
   </form>
-          <table class="table">
-            <thead>
-              <tr>
-                <th>PRIIMEK</th>
-                <th>IME</th>
-              </tr>
-            </thead>
+
+&nbsp
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>{{clan[0][2]}} {{clan[0][1]}}</th>
+            </tr>
+    </thead>
             
-            <tbody>
-              %for ime,priimek in clani:
-                <tr>
-                    <th>{{priimek}}</th>
-                    <th>{{ime}}</th>
-                  <th>
-                    <form method="POST" action="/preusmeritev_pregled_opreme/">
-                      <input type="hidden" id="emso" name="emso" value="{{emso}}">
-                      <button class="button is-info">Poglej opremo</button>
-                    </form>
-                  </th>
-              %end
-            </tbody> 
+    <tbody>
+    %for id,emso,tip_opreme in oprema_clana:
+        <tr>
+            <th>{{tip_opreme}}</th>
+            <th>
+                <form method="POST" action="/odstrani_opremo/">
+                    <input type="hidden" id="id" name="id_opreme" value="{{id}}">
+                    <input type="hidden" name="emso" value="{{emso}}">
+                    <button class="button is-info">odstrani opremo</button>
+                </form>
+            </th>
+    %end
+    </tbody> 
+</table>
+
+&nbsp
+
+<form method="POST" action="/dodaj_opremo/">
+    <div class="field">
+        <label class="label">Dodaj opremo</label>
+        <div class="control has-icons-left">
+            <input class="input" name="oprema" type="text" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Dodaj opremo')">
+            <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+            </span>
+    </div>
+    &nbsp
+    <div class="field is-grouped">
+        <div class="control">
+            <button class="button is-info">dodaj</button>
+            <input type="hidden" name="emso" value="{{clan[0][0]}}">
+        </div>
+</form>
