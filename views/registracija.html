@@ -1,37 +1,48 @@
-% rebase('baza.html')
+% setdefault('napaka', '')
+% setdefault('naslov', 'Registracija')
+% rebase('ogrodje.html', napaka=napaka, naslov=naslov)
 
-<article class="message is-success">
-    <div class="message-header">
-        <p>Pozdravljeni!</p>
+<form action="/registracija" method="post" autocomplete="off"> 
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="emso">Emšo</label>
+      <input id="emso" name="emso" type="text" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
     </div>
-    <div class="message-body">
-        Dobrodošli v glasbeni beležki.
-        Tukaj lahko shranjujete vse informacije, ki so za glasbenika najpomembnejše - beležka ima prostor za skladbe,
-        zapiske, vaje in dogodke, na katere ne želite pozabiti.
-        Beležka je nastala kot projekt pri predmetu Uvod v programiranje na Fakulteti za matematiko in fiziko. Več o
-        njenem delovanju lahko najdete na <a href="https://github.com/klara-stantic/projekt_UVP">tej povezavi</a> v mapi
-        README.md.
-        Želim vam prijetno uporabo, Klara
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="uporabnisko_ime">Uporabniško ime</label>
+      <input id="uporabnisko_ime" name="uporabnisko_ime" type="text" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
     </div>
-</article>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="geslo">Geslo</label>
+      <input id="geslo" name="geslo" type="password" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="geslo2">Ponovno geslo</label>
+      <input id="geslo2" name="geslo2" type="password" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+  <div class="form-row col">
+    <button class="btn btn-primary" type="submit">
+      Registriraj se!
+    </button>
+  </div>
 
-<form method="POST">
-    <div class="field">
-        <label class="label">Uporabniško ime</label>
-        <div class="control has-icons-left has-icons-right">
-            <input class="input" name="uporabnisko_ime" type="text" placeholder="uporabniško ime"
-                value="{{polja.get('uporabnisko_ime', '')}}">
-            <span class="icon is-small is-left">
-                <i class="fas fa-clipboard-check"></i>
-            </span>
-        </div>
-        % if "uporabnisko_ime" in napake:
-        <p class="help is-danger">{{ napake["uporabnisko_ime"] }}</p>
-        % end
-    </div>
-    <div class="field is-grouped">
-        <div class="control">
-            <button class="button is-link">Registriraj se</button>
-        </div>
-    </div>
 </form>
