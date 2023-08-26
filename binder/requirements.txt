@@ -1,0 +1,9 @@
+bottle==0.12.25
+et-xmlfile==1.1.0
+openpyxl==3.1.2
+csv 
+psycopg2
+dataclasses_json
+datetime
+hashlib
+jupyter-server-proxy
