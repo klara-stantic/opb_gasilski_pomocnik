@@ -161,10 +161,10 @@ class Clan:
         # Poisci clana
         clan = Clan.get_clan(self.emso)
         
-        if clan:
+        if clan and clan.aktiven == False:
             clan.spremeni_aktivnost(self.emso)
             clan.popravi_clana(self.emso, novo_ime=self.ime, nov_priimek=self.priimek, nova_funkcija=self.funkcija, nov_cin=self.cin, nov_zd=self.zdravniski)
-            raise ValueError("Ta član že obstaja!")
+            return "Posodobljen aktivni status!"
         
         #Ustvarjanje povezave
         baza = psycopg2.connect(conn_string)
@@ -191,10 +191,10 @@ class Clan:
             baza.close()
             return "Shranjeno"
             
-        except ValueError:
+        except:
             cur.close()
             baza.close()
-            return "Napaka"
+            raise ValueError("Ta član že obstaja!")
             
 ###############################################################################
 # VOZILA
@@ -279,17 +279,24 @@ class Vozilo:
         baza.commit()
         cur.close()
         baza.close()
+        
+        vozilo.tip_vozila = nov_tip
+        vozilo.potreben_izpit = nov_potreben_izpit
+        vozilo.st_potnikov = novo_st_potnikov
+        vozilo.znamka = nova_znamka
+        
+        if nov_tehnicni:
+            vozilo.tehnicni = nov_tehnicni
     
     # POZOR! To ne dela z dekoratorji @staticmethod ali @classmethod
     def dodaj_vozilo(self):
         # Poisci vozilo
         vozilo = Vozilo.get_vozilo(self.registrska_st)
         
-        if vozilo:
-            if vozilo.aktivno == False:
-                vozilo.spremeni_aktivnost(self.registrska_st)
-                vozilo.popravi_vozilo(self.registrska_st, nov_tip=self.tip_vozila, nov_potreben_izpit=self.potreben_izpit, novi_potniki=self.st_potnikov, nova_znamka=self.znamka, nov_tehnicni=self.tehnicni)
-                return "Uspešno spremenjen aktivni status!"
+        if vozilo and vozilo.aktivno == False:
+            vozilo.spremeni_aktivnost(self.registrska_st)
+            vozilo.popravi_vozilo(self.registrska_st, nov_tip=self.tip_vozila, nov_potreben_izpit=self.potreben_izpit, novi_potniki=self.st_potnikov, nova_znamka=self.znamka, nov_tehnicni=self.tehnicni)
+            return "Uspešno spremenjen aktivni status!"
         
         #Ustvarjanje povezave
         baza = psycopg2.connect(conn_string)
@@ -313,7 +320,7 @@ class Vozilo:
         except:
             cur.close()
             baza.close()
-            return None
+            raise ValueError("Registrska že obstaja!")
 
 
 ###############################################################################
