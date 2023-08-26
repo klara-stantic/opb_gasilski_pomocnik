@@ -26,8 +26,8 @@ class Clan:
     priimek: str 
     funkcija: int
     cin: int
-    uporabnisko_ime: str = field(init = False, default=None)
-    geslo: str = field(init = False, default=None)
+    uporabnisko_ime: str = field(default=None)
+    geslo: str = field(default=None)
     administrativne_pravice: bool = field(default=False)
     zdravniski: date = field(metadata={"format": "date"}, default=None)
     aktiven: bool = field(default=True)
@@ -151,6 +151,10 @@ class Clan:
         #Ustvarjanje povezave
         baza = psycopg2.connect(conn_string)
         cur = baza.cursor()
+        
+        if clan.aktiven:
+            brisi_opremo = f"UPDATE lastnistva_opreme SET id_lastnika = 0 WHERE id_lastnika = {clan.emso}"
+            cur.execute(brisi_opremo)
         
         bool = not clan.aktiven
 
