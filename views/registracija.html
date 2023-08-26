@@ -1,48 +1,57 @@
 % setdefault('napaka', '')
 % setdefault('naslov', 'Registracija')
 % rebase('ogrodje.html', napaka=napaka, naslov=naslov)
-
-<form action="/registracija" method="post" autocomplete="off"> 
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="emso">Emšo</label>
-      <input id="emso" name="emso" type="number" class="form-control" required
-        oninput="this.setCustomValidity('')"
-        oninvalid="this.setCustomValidity('Obvezno polje')"
-        />
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="uporabnisko_ime">Uporabniško ime</label>
-      <input id="uporabnisko_ime" name="uporabnisko_ime" type="text" class="form-control" required
-        oninput="this.setCustomValidity('')"
-        oninvalid="this.setCustomValidity('Obvezno polje')"
-        />
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="geslo">Geslo</label>
-      <input id="geslo" name="geslo" type="password" class="form-control" required
-        oninput="this.setCustomValidity('')"
-        oninvalid="this.setCustomValidity('Obvezno polje')"
-        />
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="geslo2">Ponovno geslo</label>
-      <input id="geslo2" name="geslo2" type="password" class="form-control" required
-        oninput="this.setCustomValidity('')"
-        oninvalid="this.setCustomValidity('Obvezno polje')"
-        />
-    </div>
-  </div>
-  <div class="form-row col">
-    <button class="btn btn-primary" type="submit">
-      Registriraj se!
-    </button>
-  </div>
-
+<h3 class="title is-3">Registracija</h3>
+&nbsp
+<form action="/prijava">
+  <td>
+      <div class="control has-icons-left">
+          <div class="buttons">
+              <button class="button is-primary">Nazaj</button>
+          </div>
+      </div>
+  </td>
 </form>
+&nbsp
+
+  <form class="box" action="/registracija" method="post" autocomplete="off">
+    <div class="field">
+      <label class="label">Emšo</label>
+      <div class="control">
+        <input id="emso" name="emso" type="number" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+      </div>
+    </div>
+    <div class="field">
+      <label class="label">Uporabniško ime</label>
+      <div class="control">
+        <input id="uporabnisko_ime" name="uporabnisko_ime" type="text" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+      </div>
+    </div>
+  
+    <div class="field">
+      <label class="label">Geslo</label>
+      <div class="control">
+        <input id="geslo" name="geslo" type="password" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+      </div>
+    </div>
+    <div class="field">
+      <label class="label">Ponovno geslo</label>
+      <div class="control">
+        <input id="geslo2" name="geslo2" type="password" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+      </div>
+    </div>
+  
+    <button class="button is-primary" type="submit">Registriraj se</button>
+  </form>
