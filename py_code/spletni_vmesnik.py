@@ -355,10 +355,13 @@ def post_dodaj_int():
     try:
         nov = Intervencija(opis,datum,tip_id[0][0])
         nov.dodaj_intervencijo()
-        redirect('/dodaj_clane_na_int/')
+        
+
     except:
-         nastaviSporocilo("Dodajanje intervencije ni uspelo")
-         redirect('/intervencije/')
+        nastaviSporocilo("Dodajanje intervencije ni uspelo")
+        redirect('/intervencije/')
+
+    redirect('/dodaj_clane_na_int/')
 
 @get('/dodaj_clane_na_int/')
 def dodaj_clane_int():
