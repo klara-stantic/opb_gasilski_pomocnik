@@ -591,12 +591,9 @@ def registracija_post():
         return
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()    
-        uporabnik = None
-        try: 
-            uporabnik = cur.execute(f"SELECT * FROM clan WHERE emso = {emso}")
-            uporabnik = cur.fetchone()
-        except:
-            uporabnik = None
+
+        uporabnik = Clan.get_clan(emso)
+        
         if uporabnik is None:
             nastaviSporocilo('Registracija ni možna! Člana s to EMŠO ni v bazi.') 
             redirect('/registracija')
@@ -609,6 +606,9 @@ def registracija_post():
             nastaviSporocilo('Gesli se ne ujemata.') 
             redirect('/registracija')
             return
+        if uporabnik.validate_username() == False:
+            nastaviSporocilo("To uporabniško ime je že zasedeno.")
+            redirect('/registracija')
         zgostitev = hashGesla(geslo)
         cur.execute(f"UPDATE clan SET uporabnisko_ime = %s, geslo = %s WHERE emso = %s", (uporabnisko_ime, zgostitev, int(emso)))
         response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
