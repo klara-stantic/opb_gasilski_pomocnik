@@ -35,7 +35,7 @@ def nastaviSporocilo(sporocilo = None):
     # global napakaSporocilo
     staro = request.get_cookie("sporocilo", secret=skrivnost)
     if sporocilo is None:
-        response.delete_cookie('sporocilo')
+        response.delete_cookie('sporocilo', path="/",secret=skrivnost)
     else:
         response.set_cookie('sporocilo', sporocilo, path="/", secret=skrivnost)
     return staro 
@@ -66,7 +66,6 @@ def osnovna_stran():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
         return
-    napaka = nastaviSporocilo()
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
             clani = cur.execute("""SELECT ime,priimek FROM clan WHERE aktiven = true AND (CURRENT_DATE-zdravniski) >=630 ORDER BY priimek""")
@@ -87,7 +86,7 @@ def osnovna_stran():
             tip_tek = cur.fetchall()
             tip_v = cur.execute("""SELECT * FROM tip_vozila""")
             tip_v = cur.fetchall()
-    return template('osnovna_stran.html',napaka=napaka,clani_n=clani_n,vozila_n=vozila_n,tip_v=tip_v,clani=clani,vozila=vozila,tek=tek,vaje=vaje,tip_tek=tip_tek,tip_vaje=tip_vaje)
+    return template('osnovna_stran.html',clani_n=clani_n,vozila_n=vozila_n,tip_v=tip_v,clani=clani,vozila=vozila,tek=tek,vaje=vaje,tip_tek=tip_tek,tip_vaje=tip_vaje)
 
 
 ###############################################################################
@@ -96,6 +95,9 @@ def osnovna_stran():
 
 @get('/clani/') 
 def prikaz_clanov():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     napaka = nastaviSporocilo()
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
@@ -109,17 +111,23 @@ def prikaz_clanov():
 
 @get('/dodaj_clana/')
 def nov_clan():
-     napaka = nastaviSporocilo()
-     with psycopg2.connect(conn_string) as baza:
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
+    napaka = nastaviSporocilo()
+    with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
             funkcija= cur.execute("""SELECT * FROM funkcija""")
             funkcija = cur.fetchall()
             cin = cur.execute("""SELECT * FROM cin""")
             cin = cur.fetchall()
-     return template('n_clan',napaka=napaka,funkcije = funkcija, cin=cin)
+    return template('n_clan',napaka=napaka,funkcije = funkcija, cin=cin)
     
 @post('/dodaj_clana/')
 def nov_clan_post():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     ime = request.forms.getunicode('ime')
     priimek = request.forms.getunicode('priimek')
     emso = request.forms.getunicode('emso')
@@ -141,6 +149,9 @@ def nov_clan_post():
 
 @post('/odstrani_clana/')
 def odstrani_clana():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     emso = request.forms.getunicode('emso')
     try:
         Clan.spremeni_aktivnost(int(emso))
@@ -150,6 +161,9 @@ def odstrani_clana():
 
 @post('/preusmeritev_popravi_clan/')
 def popravi_clana():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     napaka = nastaviSporocilo()
     emso = request.forms.getunicode('emso')
     with psycopg2.connect(conn_string) as baza:
@@ -164,6 +178,9 @@ def popravi_clana():
 
 @post('/popravi_clana/')
 def popravi_clana_dokonco():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     emso = request.forms.getunicode('emso')
     ime = request.forms.getunicode('ime')
     priimek = request.forms.getunicode('priimek')
@@ -186,6 +203,9 @@ def popravi_clana_dokonco():
 
 @get('/vozila/') 
 def prikaz_vozil():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     napaka = nastaviSporocilo()
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
@@ -199,6 +219,9 @@ def prikaz_vozil():
 
 @get('/dodaj_vozilo/')
 def novo_vozilo():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     napaka = nastaviSporocilo()
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
@@ -210,6 +233,9 @@ def novo_vozilo():
 
 @post('/dodaj_vozilo/')
 def novo_vozilo_post():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     reg = request.forms.getunicode('reg')
     izpit = request.forms.getunicode('izpit')
     tip = request.forms.getunicode('tip_vozila')
@@ -226,7 +252,7 @@ def novo_vozilo_post():
         nov = Vozilo(reg,tip_id[0][0],izpit_id[0][0],int(potniki),znamka,tehnicni)
         nov.dodaj_vozilo()
     except:
-         nastaviSporocilo("Ta registerska številka že obstaja")
+        nastaviSporocilo("Ta registerska številka že obstaja")
     redirect('/vozila/')
 
 @post('/odstrani_vozilo/')
