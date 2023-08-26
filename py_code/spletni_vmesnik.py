@@ -618,7 +618,7 @@ def dodaj_opremo_clanu():
 
 
 @route("/odstrani_opremo/", method='POST')
-def prikaz_opreme():
+def odstrani_opremo():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
         return
