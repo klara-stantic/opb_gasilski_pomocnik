@@ -103,7 +103,7 @@ class Clan:
         cur = baza.cursor()
         
         if clan.aktiven:
-            brisi_opremo = f"UPDATE lastnistva_opreme SET id_lastnika = 0 WHERE id_lastnika = {clan.emso}"
+            brisi_opremo = f"DELETE FROM osebna_oprema WHERE emso_clana = {clan.emso}"
             cur.execute(brisi_opremo)
         
         bool = not clan.aktiven
