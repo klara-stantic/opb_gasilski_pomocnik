@@ -4,5 +4,4 @@ openpyxl==3.1.2
 psycopg2
 dataclasses_json
 datetime
-hashlib
 jupyter-server-proxy

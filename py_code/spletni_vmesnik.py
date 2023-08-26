@@ -358,6 +358,7 @@ def post_dodaj_int():
         redirect('/dodaj_clane_na_int/')
     except:
          nastaviSporocilo("Dodajanje intervencije ni uspelo")
+         redirect('/intervencije/')
 
 @get('/dodaj_clane_na_int/')
 def dodaj_clane_int():

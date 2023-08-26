@@ -1,7 +1,37 @@
-% setdefault('napaka', '')
-% setdefault('naslov', 'Registracija')
-% rebase('ogrodje.html', napaka=napaka, naslov=naslov)
-<h3 class="title is-3">Registracija</h3>
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gasilski pomočnik</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <script src="https://kit.fontawesome.com/b1b31e483a.js" crossorigin="anonymous"></script>
+</head>
+
+
+<body>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <span class="navbar-item" href="/">
+                    <span class="icon">
+                        <i class="fire-extinguisher"></i>
+                    </span>
+                    <strong>GASILSKI POMOČNIK</strong>
+                </span>
+            </div>
+        </div>                        
+    </nav>
+    <section class="section">
+        % if napaka:
+        <div class="notification is-danger">
+            {{napaka}}
+        </div>
+        % end
+
+        <h3 class="title is-3">Registracija</h3>
 &nbsp
 <form action="/prijava">
   <td>
@@ -55,3 +85,11 @@
   
     <button class="button is-primary" type="submit">Registriraj se</button>
   </form>
+  </section>
+</body>
+
+</html>
+
+
+
+
