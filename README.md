@@ -18,3 +18,4 @@ Projekt je izdelek več ur skupnega dela, zato so commiti velikokrat narejeni iz
 * Vajam bi lahko dodali evidenco prisotnosti, posameznim članom pa glede na to prikazali, na koliko vajah so bili
 * Dodali bi lahko administratorja z več pravicami, kot jih ima navaden uporabnik
 * Lepši prikaz tipov vaj, tekmovanj, ...
+* Možnost spreminjanja uporabniških imen in gesel

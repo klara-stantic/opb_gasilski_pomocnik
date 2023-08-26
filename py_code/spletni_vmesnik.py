@@ -90,7 +90,7 @@ def osnovna_stran():
 
 
 ###############################################################################
-# Člani
+# ČLANI
 ############################################################################### 
 
 @get('/clani/') 
@@ -198,7 +198,10 @@ def popravi_clana_dokonco():
     #except:
          #nastaviSporocilo("popravljanje podatkov ni uspelo")
     redirect('/clani/')
-###################################################################################################     
+    
+###############################################################################
+# VOZILA
+###############################################################################    
 
 
 @get('/vozila/') 
@@ -307,7 +310,9 @@ def popravi_clana_dokonco():
         nastaviSporocilo("Popravljanje podatkov ni uspelo")
     redirect('/vozila/')
 
-#######################################################################################
+###############################################################################
+# INTERVENCIJE
+###############################################################################
 
 @get("/intervencije/")
 def intervencije():
@@ -573,7 +578,10 @@ def odstrani_vajo():
         nastaviSporocilo("Izbris vaje ni uspel")
     redirect("/vaje/")
 
-###########################################################################
+###############################################################################
+# OPREMA
+###############################################################################
+
 @get("/oprema/")
 def oprema():
     uporabnik = preveriUporabnika()
@@ -657,9 +665,7 @@ def registracija_post():
         return
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()    
-
         uporabnik = Clan.get_clan(emso)
-        
         if uporabnik is None:
             nastaviSporocilo('Registracija ni možna! Člana s to EMŠO ni v bazi.') 
             redirect('/registracija')
@@ -672,9 +678,17 @@ def registracija_post():
             nastaviSporocilo('Gesli se ne ujemata.') 
             redirect('/registracija')
             return
-        if uporabnik.validate_username() == False:
+        #try:
+        #    zgostitev = hashGesla(geslo)
+        #    cur.execute(f"UPDATE clan SET uporabnisko_ime = %s, geslo = %s WHERE emso = %s", (uporabnisko_ime, zgostitev, int(emso)))
+        #    response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
+        #except:
+        #    nastaviSporocilo("To uporabniško ime je že zasedeno.")
+        #    redirect('/registracija')
+        if Clan.validate_username(uporabnisko_ime) == False:
             nastaviSporocilo("To uporabniško ime je že zasedeno.")
             redirect('/registracija')
+            return
         zgostitev = hashGesla(geslo)
         cur.execute(f"UPDATE clan SET uporabnisko_ime = %s, geslo = %s WHERE emso = %s", (uporabnisko_ime, zgostitev, int(emso)))
         response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
