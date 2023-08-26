@@ -313,7 +313,6 @@ def intervencije():
 
 @get("/dodaj_int/")
 def dodaj_intervencijo():
-    napaka = nastaviSporocilo()
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()
         tip_int = cur.execute("""SELECT * FROM tip_intervencije""")
@@ -335,6 +334,7 @@ def post_dodaj_int():
         redirect('/dodaj_clane_na_int/')
     except:
          nastaviSporocilo("Dodajanje intervencije ni uspelo")
+         redirect('/intervencije/')
 
 @get('/dodaj_clane_na_int/')
 def dodaj_clane_int():
