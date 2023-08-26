@@ -19,3 +19,8 @@ Projekt je izdelek več ur skupnega dela, zato so commiti velikokrat narejeni iz
 * Dodali bi lahko administratorja z več pravicami, kot jih ima navaden uporabnik
 * Lepši prikaz tipov vaj, tekmovanj, ...
 * Možnost spreminjanja uporabniških imen in gesel
+
+
+# BINDER dostop
+[bINDER](https://mybinder.org/v2/gh/klara-stantic/opb_gasilski_pomocnik/main?labpath=proxy%2F8080)
+
