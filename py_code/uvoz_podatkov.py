@@ -40,7 +40,7 @@ with psycopg2.connect(conn_string) as baza:
     csv_datoteke = ["cin", "funkcija", "kategorija_vozniskega_dovoljenja", "tip_intervencije", "tip_tecaja", "tip_tekmovanja", "tip_vozila"]
     for ime in csv_datoteke:
         uvoziCSV(cur, ime)
-    cur.execute("INSERT INTO clan (emso,ime,priimek,funkcija,cin) VALUES (0,'ime','priimek',1,1)")
+    cur.execute("INSERT INTO clan (emso,ime,priimek,funkcija,cin) VALUES (1,'ime','priimek',1,1)")
 #delo z bazo 
 #with psycopg2.connect(conn_string) as con:
 #    cur = con.cursor()
