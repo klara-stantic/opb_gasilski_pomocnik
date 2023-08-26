@@ -90,7 +90,7 @@ def osnovna_stran():
 
 
 ###############################################################################
-# Člani
+# ČLANI
 ############################################################################### 
 
 @get('/clani/') 
@@ -198,7 +198,10 @@ def popravi_clana_dokonco():
     #except:
          #nastaviSporocilo("popravljanje podatkov ni uspelo")
     redirect('/clani/')
-###################################################################################################     
+    
+###############################################################################
+# VOZILA
+###############################################################################    
 
 
 @get('/vozila/') 
@@ -257,6 +260,9 @@ def novo_vozilo_post():
 
 @post('/odstrani_vozilo/')
 def odstrani_vozilo():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     reg = request.forms.getunicode('reg')
     try:
         Vozilo.spremeni_aktivnost(reg)
@@ -266,6 +272,9 @@ def odstrani_vozilo():
 
 @post('/preusmeritev_popravi_vozilo/')
 def popravi_vozilo():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     napaka = nastaviSporocilo()
     reg = request.forms.getunicode('reg')
     with psycopg2.connect(conn_string) as baza:
@@ -280,6 +289,9 @@ def popravi_vozilo():
 
 @post('/popravi_vozilo/')
 def popravi_clana_dokonco():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     reg = request.forms.getunicode('reg')
     izpit = request.forms.getunicode('izpit')
     tip = request.forms.getunicode('tip_vozila')
@@ -298,29 +310,41 @@ def popravi_clana_dokonco():
         nastaviSporocilo("Popravljanje podatkov ni uspelo")
     redirect('/vozila/')
 
-#######################################################################################
+###############################################################################
+# INTERVENCIJE
+###############################################################################
 
 @get("/intervencije/")
 def intervencije():
-      napaka = nastaviSporocilo()
-      with psycopg2.connect(conn_string) as baza:
-            cur = baza.cursor()
-            inte = cur.execute("""SELECT * FROM intervencija""")
-            inte = cur.fetchall()
-            tip_int = cur.execute("""SELECT * FROM tip_intervencije""")
-            tip_int = cur.fetchall()
-      return template("prikaz_int.html",napaka=napaka,inte=inte,tip_int=tip_int)
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
+    napaka = nastaviSporocilo()
+    with psycopg2.connect(conn_string) as baza:
+        cur = baza.cursor()
+        inte = cur.execute("""SELECT * FROM intervencija""")
+        inte = cur.fetchall()
+        tip_int = cur.execute("""SELECT * FROM tip_intervencije""")
+        tip_int = cur.fetchall()
+    return template("prikaz_int.html",napaka=napaka,inte=inte,tip_int=tip_int)
 
 @get("/dodaj_int/")
 def dodaj_intervencijo():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
+    napaka = nastaviSporocilo()
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()
         tip_int = cur.execute("""SELECT * FROM tip_intervencije""")
         tip_int = cur.fetchall()
-    return template('nova_intrvencija.html',tip_int=tip_int)
+    return template('nova_intrvencija.html',tip_int=tip_int, napaka=napaka)
 
 @post("/dodaj_int/")
 def post_dodaj_int():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     tip = request.forms.getunicode('tip_int')
     datum = request.forms.getunicode('datum')
     opis = request.forms.getunicode('opis')
@@ -338,6 +362,9 @@ def post_dodaj_int():
 
 @get('/dodaj_clane_na_int/')
 def dodaj_clane_int():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     napaka = nastaviSporocilo()
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()
@@ -353,6 +380,9 @@ def dodaj_clane_int():
 
 @post('/dodaj_clane_na_int/')
 def post():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     id_intervencije = request.forms.getunicode('id_int')
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()
@@ -386,6 +416,9 @@ def post():
 
 @route("/prikaz_int/", method='POST')
 def prikaz_intervencije():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     napaka = nastaviSporocilo()
     id_za_prikaz = request.forms.getunicode('id')
     with psycopg2.connect(conn_string) as baza:
@@ -405,6 +438,9 @@ def prikaz_intervencije():
 
 @route('/odstrani_int/', method='POST')
 def odstrani_intervencijo():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     id = request.forms.getunicode('id')
     try:
         Intervencija.odstrani_intervencijo(int(id))
@@ -418,6 +454,9 @@ def odstrani_intervencijo():
 
 @get("/tekmovanja/")
 def tekmovanje():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     napaka = nastaviSporocilo()
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
@@ -429,6 +468,9 @@ def tekmovanje():
 
 @get('/dodaj_tekmovanje/')
 def dodaj_tekmovanje():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     napaka = nastaviSporocilo()
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()
@@ -438,6 +480,9 @@ def dodaj_tekmovanje():
 
 @route('/dodaj_tekekmovanje/', method='POST')
 def post_dodaj_tekmovanje():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     datum = request.forms.getunicode('datum')
     tip = request.forms.getunicode('tip_tek')
     lokacija = request.forms.getunicode('lokacija')
@@ -454,6 +499,9 @@ def post_dodaj_tekmovanje():
 
 @route('/odstrani_tek/', method='POST')
 def odstrani_tekmovanje():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     id = request.forms.getunicode('id_tek')
     try:
         Tekomvanje.odstrani_tekmovanje(int(id))
@@ -467,6 +515,9 @@ def odstrani_tekmovanje():
 
 @get("/vaje/")
 def vaje():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     napaka = nastaviSporocilo()
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
@@ -478,6 +529,9 @@ def vaje():
 
 @get("/dodaj_vajo/")
 def dodaj_vajo():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     napaka = nastaviSporocilo()
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()
@@ -491,6 +545,9 @@ def dodaj_vajo():
 
 @route('/dodaj_vajo/', method='POST')
 def post_dodaj_vajo():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     datum = request.forms.getunicode('datum')
     udeležba = request.forms.getunicode('obvezna')
     tip_vaje = request.forms.getunicode('tip_vaje')
@@ -512,6 +569,9 @@ def post_dodaj_vajo():
 
 @route('/odstrani_vajo/', method='POST')
 def odstrani_vajo():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     id = request.forms.getunicode('id_vaje')
     try:
         Vaja.odstrani_vajo(int(id))
@@ -519,9 +579,15 @@ def odstrani_vajo():
         nastaviSporocilo("Izbris vaje ni uspel")
     redirect("/vaje/")
 
-###########################################################################
+###############################################################################
+# OPREMA
+###############################################################################
+
 @get("/oprema/")
 def oprema():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     napaka = nastaviSporocilo()
     with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
@@ -531,6 +597,9 @@ def oprema():
 
 @get("/preusmeritev_pregled_opreme/<emso_za_prikaz>/")
 def prikaz_opreme(emso_za_prikaz):
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     napaka= nastaviSporocilo()
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()
@@ -543,7 +612,10 @@ def prikaz_opreme(emso_za_prikaz):
 
 
 @route("/dodaj_opremo/", method='POST')
-def dodaj_opremo_clanau():
+def dodaj_opremo_clanu():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     emso_za_dodajo = request.forms.getunicode('emso')
     oprema = request.forms.getunicode('oprema')
     try:
@@ -555,7 +627,10 @@ def dodaj_opremo_clanau():
 
 
 @route("/odstrani_opremo/", method='POST')
-def prikaz_opreme():
+def odstrani_opremo():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     id_opreme = request.forms.getunicode('id_opreme')
     emso =request.forms.getunicode('emso')
     try:
@@ -591,9 +666,7 @@ def registracija_post():
         return
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()    
-
         uporabnik = Clan.get_clan(emso)
-        
         if uporabnik is None:
             nastaviSporocilo('Registracija ni možna! Člana s to EMŠO ni v bazi.') 
             redirect('/registracija')
@@ -606,9 +679,17 @@ def registracija_post():
             nastaviSporocilo('Gesli se ne ujemata.') 
             redirect('/registracija')
             return
-        if uporabnik.validate_username() == False:
+        #try:
+        #    zgostitev = hashGesla(geslo)
+        #    cur.execute(f"UPDATE clan SET uporabnisko_ime = %s, geslo = %s WHERE emso = %s", (uporabnisko_ime, zgostitev, int(emso)))
+        #    response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
+        #except:
+        #    nastaviSporocilo("To uporabniško ime je že zasedeno.")
+        #    redirect('/registracija')
+        if Clan.validate_username(uporabnisko_ime) == False:
             nastaviSporocilo("To uporabniško ime je že zasedeno.")
             redirect('/registracija')
+            return
         zgostitev = hashGesla(geslo)
         cur.execute(f"UPDATE clan SET uporabnisko_ime = %s, geslo = %s WHERE emso = %s", (uporabnisko_ime, zgostitev, int(emso)))
         response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
