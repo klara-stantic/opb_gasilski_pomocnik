@@ -289,7 +289,7 @@ class Vozilo:
             if vozilo.aktivno == False:
                 vozilo.spremeni_aktivnost(self.registrska_st)
                 vozilo.popravi_vozilo(self.registrska_st, nov_tip=self.tip_vozila, nov_potreben_izpit=self.potreben_izpit, novi_potniki=self.st_potnikov, nova_znamka=self.znamka, nov_tehnicni=self.tehnicni)
-                return "To vozilo že obstaja"
+                return "Uspešno spremenjen aktivni status!"
         
         #Ustvarjanje povezave
         baza = psycopg2.connect(conn_string)
@@ -310,10 +310,10 @@ class Vozilo:
             baza.close()
             return "Shranjeno"
             
-        except ValueError:
+        except:
             cur.close()
             baza.close()
-            return "Napaka"
+            return None
 
 
 ###############################################################################
