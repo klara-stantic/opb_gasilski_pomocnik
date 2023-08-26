@@ -5,5 +5,4 @@ csv
 psycopg2
 dataclasses_json
 datetime
-bcrypt
 hashlib
