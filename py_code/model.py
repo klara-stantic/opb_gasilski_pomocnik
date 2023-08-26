@@ -11,9 +11,6 @@ from dataclasses import dataclass, field #, asdict
 from dataclasses_json import dataclass_json
 from datetime import date
 
-# Za namene registracij in prijav
-import bcrypt
-
 ###############################################################################
 # ČLANI
 ###############################################################################
@@ -55,35 +52,7 @@ class Clan:
         else:
             return True
     
-    # Validacija gesel
-    def nastavi_geslo(self, geslo):
-        geslo = geslo.encode("utf-8")
-        sol = bcrypt.gensalt()
-        hashed_geslo = bcrypt.hashpw(geslo, sol)
-        
-        # Povezava z bazo
-        conn = psycopg2.connect(conn_string)
-        cur = conn.cursor()
-        
-        sql_niz = "UPDATE clan SET geslo = %s WHERE emso = %s"
-        values = (hashed_geslo, self.emso)
-        
-        cur.execute(sql_niz, values)
-
-        conn.commit()
-        cur.close()
-        conn.close()
-        
-        self.geslo = geslo
     
-    
-    def preveri_geslo(self, vneseno_geslo):
-        # zgostitev je nastavljeno geslo z zgornjo funkcijo!
-        vneseno_geslo = vneseno_geslo.encode("utf-8")
-        staro_geslo = self.geslo.encode("utf-8")
-        return bcrypt.checkpw(vneseno_geslo, staro_geslo)
-        
-
     # Metoda, s katero preko emsota dostopamo do clanov
     @classmethod
     def get_clan(cls, emso):
@@ -106,25 +75,6 @@ class Clan:
             print("Takega člana ne najdem!")
             return None
     
-    
-    def spremeni_geslo(self, staro_geslo_vnos, novo_geslo):
-        # Poisci clana
-        clan = Clan.get_clan(self.emso)
-        
-        #Ustvarjanje povezave
-        baza = psycopg2.connect(conn_string)
-        cur = baza.cursor()
-        
-        # Če gesla še ni, potem vrni funkcijo nastavi_geslo
-        if clan.geslo == "":
-            clan.nastavi_geslo(novo_geslo)
-                # Preveri, če pozna staro geslo, tedaj izvedi menjavo
-        elif clan.preveri_geslo(staro_geslo_vnos):
-            clan.nastavi_geslo(novo_geslo)
-        else:
-            print("Staro geslo ni bilo pravilno!")
-        
-        
     def spremeni_username(self, new_username):
         # Poisci clana
         clan = Clan.get_clan(self.emso)
