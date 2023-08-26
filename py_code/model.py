@@ -435,6 +435,11 @@ class Intervencija:
     def dodaj_clana_intervenciji(id_intervencije_za_dodat_clane,emso_clan_na_intervenciji):
         with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
+            isci_relacijo = f"SELECT * FROM prisotnost_na_intervencijah WHERE id_intervencije = %s AND emso_prisotnega = %s"
+            cur.execute(isci_relacijo, (id_intervencije_za_dodat_clane, emso_clan_na_intervenciji, ))
+            najdeno = cur.fetchone()
+            if najdeno:
+                return "Že obstaja!"        
             try:
                 sql_niz_za_dodajanje_posameznega_clana = "INSERT into prisotnost_na_intervencijah ( id_intervencije,emso_prisotnega) VALUES (%s, %s)"
                 cur.execute(sql_niz_za_dodajanje_posameznega_clana,(id_intervencije_za_dodat_clane,emso_clan_na_intervenciji))
@@ -449,6 +454,11 @@ class Intervencija:
     def dodaj_vozilo_intervenciji(id_intervencije_za_dodat_vozilo,reg_vozila_na_intervenciji):
         with psycopg2.connect(conn_string) as baza:
             cur = baza.cursor()
+            isci_relacijo = f"SELECT * FROM vozila_na_intervencijah WHERE id_intervencije = %s AND registracija_vozila = %s"
+            cur.execute(isci_relacijo, (id_intervencije_za_dodat_vozilo, reg_vozila_na_intervenciji, ))
+            najdeno = cur.fetchone()
+            if najdeno:
+                return "Že obstaja!" 
             try:
                 sql_niz_za_dodajanje_posameznega_vozila = "INSERT into vozila_na_intervencijah (id_intervencije,registracija_vozila) VALUES (%s, %s)"
                 cur.execute(sql_niz_za_dodajanje_posameznega_vozila,(id_intervencije_za_dodat_vozilo,reg_vozila_na_intervenciji))
