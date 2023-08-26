@@ -11,6 +11,9 @@ from dataclasses import dataclass, field #, asdict
 from dataclasses_json import dataclass_json
 from datetime import date
 
+# V namene gesel
+import hashlib
+
 ###############################################################################
 # ČLANI
 ###############################################################################
@@ -33,24 +36,25 @@ class Clan:
         return f"Član {self.ime} {self.priimek}"
         
     # Validacija uporabniških imen
-    def validate_username(self):
+    @staticmethod
+    def validate_username(username):
         # Povezava z bazo
         conn = psycopg2.connect(conn_string)
         cursor = conn.cursor()
         
         # Iskanje obstoječega uporabniškega imena
-        query = f"SELECT * FROM clan WHERE uporabnisko_ime = {self.uporabnisko_ime};"
-        cursor.execute(query)
+        query = f"SELECT * FROM clan WHERE uporabnisko_ime = %s;"
+        cursor.execute(query, (username, ))
         fetched_data = cursor.fetchone()
-        
+            
         cursor.close()
         conn.close()
         
         # Vrne true ali false glede na unikatnost 
-        if fetched_data:
-            return False
-        else:
+        if fetched_data == None:
             return True
+        else:
+            return False
     
     
     # Metoda, s katero preko emsota dostopamo do clanov
@@ -83,8 +87,11 @@ class Clan:
         baza = psycopg2.connect(conn_string)
         cur = baza.cursor()
         
-        sql_niz = "UPDATE clan SET username = %s WHERE emso = {self.emso}"
-        values = (new_username)
+        if Clan.validate_username(new_username):
+            sql_niz = "UPDATE clan SET username = %s WHERE emso = {self.emso}"
+            values = (new_username)
+        else:
+            raise ValueError("To uporabniško ime je že zasedeno!")
         
         cur.execute(sql_niz, values)
         print(f"Popravljeno uporabniško ime člana z emšo: {clan.emso}")
