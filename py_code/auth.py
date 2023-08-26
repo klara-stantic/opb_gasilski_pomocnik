@@ -1,4 +1,4 @@
 host = "baza.fmf.uni-lj.si"
 dbname = "sem2023_tinef" 
-user = "tinef"
-password = "bib17ook"
+user = "javnost"
+password = "javnogeslo"

@@ -738,7 +738,6 @@ def odjava_get():
     redirect('/prijava')
 
 
-
 ###################################################################################33
 # Poženemo strežnik
 run(host='localhost', port=8080, reloader=True) 

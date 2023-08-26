@@ -24,3 +24,7 @@ Projekt je izdelek več ur skupnega dela, zato so commiti velikokrat narejeni iz
 # BINDER dostop
 [bINDER](https://mybinder.org/v2/gh/klara-stantic/opb_gasilski_pomocnik/main?labpath=proxy%2F8080)
 
+# Dostop v aplikacijo
+V aplikacijo lahko javni uporabnik dostopa preko javnega člana. Ta ima uporabniško ime "uporabnik" in geslo "geslo".
+Člani, ki so vpisani v register članov se lahko registrirajo sami s svojo EMŠO številko in si sami določijo geslo in uporabniško ime.
+
