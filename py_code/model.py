@@ -295,7 +295,7 @@ class Vozilo:
         
         if vozilo and vozilo.aktivno == False:
             vozilo.spremeni_aktivnost(self.registrska_st)
-            vozilo.popravi_vozilo(self.registrska_st, nov_tip=self.tip_vozila, nov_potreben_izpit=self.potreben_izpit, novi_potniki=self.st_potnikov, nova_znamka=self.znamka, nov_tehnicni=self.tehnicni)
+            vozilo.popravi_vozilo(self.registrska_st, nov_tip=self.tip_vozila, nov_potreben_izpit=self.potreben_izpit, novo_st_potnikov=self.st_potnikov, nova_znamka=self.znamka, nov_tehnicni=self.tehnicni)
             return "Uspešno spremenjen aktivni status!"
         
         #Ustvarjanje povezave

@@ -540,7 +540,7 @@ def dodaj_vajo():
         cur = baza.cursor()
         tip_vaje = cur.execute("""SELECT * FROM tip_intervencije""")
         tip_vaje = cur.fetchall()
-        vodaja = cur.execute("""SELECT * FROM clan""")
+        vodaja = cur.execute("""SELECT * FROM clan WHERE aktiven=true ORDER BY priimek,ime""")
         vodaja = cur.fetchall()
         vaje = cur.execute("""SELECT * FROM vaja""")
         vaje = cur.fetchall()
