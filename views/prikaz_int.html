@@ -37,7 +37,7 @@
 <article class="message is-info">
     <div class="message-header">
       <p>{{tip_int[tip - 1][1]}} dne: {{datum}} </p>
-      <form action="{{url(odstrani_intervencijo')}}" method="POST" >
+      <form action="{{url('odstrani_intervencijo')}}" method="POST" >
         <input type="hidden" name="id" value="{{id}}" >
         <button class="delete" aria-label="delete"></button>
       </form>
