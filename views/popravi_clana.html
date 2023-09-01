@@ -1,13 +1,13 @@
 % setdefault('napaka', '')
 %rebase('ogrodje.html',napaka=napaka)
-<form action="{{url('clani')}}">
+<form action="{{url('prikaz_clanov')}}">
     <td>
         <div class="buttons">
             <button class="button is-info">Nazaj</button>
           </div>
     </td>
   </form>
-  <form method="POST" action="{{url('popravi_clana')}}">
+  <form method="POST" action="{{url('popravi_clana_dokonco')}}">
 
     <input type="hidden" name="emso" value="{{clan[0][0]}}">
 

@@ -1,13 +1,13 @@
 % setdefault('napaka', '')
 %rebase('ogrodje.html',napaka=napaka)
-<form action="{{url('vozila')}}">
+<form action="{{url('prikaz_vozil')}}">
     <td>
         <div class="buttons">
             <button class="button is-info">Nazaj</button>
           </div>
     </td>
   </form>
-  <form method="POST" action="{{url('popravi_vozilo')}}">
+  <form method="POST" action="{{url('popravi_vozilo_dokonco')}}">
     <input type="hidden" name="reg" value="{{vozilo[0][0]}}">
     <div class="field">
         <label class="label">Znamka</label>

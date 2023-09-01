@@ -204,7 +204,7 @@ def popravi_clana_dokonco():
 ###############################################################################    
 
 
-@get('/vozila') 
+@get('/prikaz_vozil') 
 def prikaz_vozil():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -220,7 +220,7 @@ def prikaz_vozil():
             izpit = cur.fetchall()
     return template('prikaz_vozil.html',napaka = napaka,vozila=vozila,tip=tip,izpit=izpit)
 
-@get('/dodaj_vozilo')
+@get('/novo_vozilo')
 def novo_vozilo():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -234,7 +234,7 @@ def novo_vozilo():
             izpit = cur.fetchall()
     return template('novo_vozilo.html',napaka=napaka,tip_v=tip_v,izpit=izpit)
 
-@post('/dodaj_vozilo')
+@post('/novo_vozilo_post')
 def novo_vozilo_post():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -256,7 +256,7 @@ def novo_vozilo_post():
         nov.dodaj_vozilo()
     except:
         nastaviSporocilo("Ta registerska številka že obstaja")
-    redirect(url('vozila'))
+    redirect(url('prikaz_vozil'))
 
 @post('/odstrani_vozilo')
 def odstrani_vozilo():
@@ -268,9 +268,9 @@ def odstrani_vozilo():
         Vozilo.spremeni_aktivnost(reg)
     except:
          nastaviSporocilo("izbris vozila ni uspel")
-    redirect(url('vozila'))
+    redirect(url('prikaz_vozil'))
 
-@post('/preusmeritev_popravi_vozilo')
+@post('/popravi_vozilo')
 def popravi_vozilo():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -287,8 +287,8 @@ def popravi_vozilo():
         izpit = cur.fetchall()
     return template('popravi_vozilo.html',napaka=napaka,vozilo=vozilo,tip_v=tip_v,izpit=izpit)
 
-@post('/popravi_vozilo')
-def popravi_clana_dokonco():
+@post('/popravi_vozilo_dokonco')
+def popravi_vozilo_dokonco():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
         return
@@ -308,7 +308,7 @@ def popravi_clana_dokonco():
         Vozilo.popravi_vozilo(reg,tip_id[0][0],izpit_id[0][0],int(potniki),znamka,tehnicni)
     except:
         nastaviSporocilo("Popravljanje podatkov ni uspelo")
-    redirect(url('vozila'))
+    redirect(url('prikaz_vozil'))
 
 ###############################################################################
 # INTERVENCIJE
@@ -498,7 +498,7 @@ def post_dodaj_tekmovanje():
         nov.dodaj_tekmovanje()
     except:
         nastaviSporocilo("Dodajane tekmovanja ni uspelo")
-    redirect(url('tekmovanja'))
+    redirect(url('tekmovanje'))
 
 @route('/odstrani_tek', method='POST')
 def odstrani_tekmovanje():
@@ -510,7 +510,7 @@ def odstrani_tekmovanje():
         Tekomvanje.odstrani_tekmovanje(int(id))
     except:
         nastaviSporocilo("Izbris tekmovanja ni uspel")
-    redirect(url('tekmovanja'))
+    redirect(url('tekmovanje'))
 
 ###############################################################################
 # VAJE
@@ -626,7 +626,7 @@ def dodaj_opremo_clanu():
         nov.dodaj_opremo()
     except:
          nastaviSporocilo("Dodajanje opreme ni uspelo")
-    redirect(url(f'preusmeritev_pregled_opreme',emso_za_dodajo=emso_za_dodajo))
+    redirect(url('prikaz_opreme',emso_za_prikaz=emso_za_dodajo))
 
 
 @route("/odstrani_opremo", method='POST')
@@ -640,7 +640,7 @@ def odstrani_opremo():
         Oprema.odstrani_opremo(int(id_opreme))
     except:
         nastaviSporocilo("Odstranitev opreme ni uspelo")
-    redirect(url(f"/preusmeritev_pregled_opreme/{emso}"))
+    redirect(url('prikaz_opreme',emso_za_prikaz=emso))
 
 
 ###############################################################################
@@ -735,7 +735,7 @@ def prijava_post():
 @get('/odjava')
 def odjava_get():
     response.delete_cookie('uporabnisko_ime')
-    redirect(url('prijava'))
+    redirect(url('prijava_get'))
 
 
 ###################################################################################33

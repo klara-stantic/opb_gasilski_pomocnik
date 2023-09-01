@@ -1,13 +1,13 @@
 % setdefault('napaka', '')
 %rebase('ogrodje.html',napaka=napaka)
-<form action="{{url('vozila')}}">
+<form action="{{url('prikaz_vozil')}}">
     <td>
         <div class="buttons">
             <button class="button is-info">Nazaj</button>
           </div>
     </td>
   </form>
-  <form method="POST" action="{{url('dodaj_vozilo')}}">
+  <form method="POST" action="{{url('novo_vozilo_post')}}">
     <div class="field">
         <label class="label"> Registerska številka</label>
         <div class="control has-icons-left">
