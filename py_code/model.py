@@ -3,7 +3,11 @@ import psycopg2
 # podatki za dostop do postgreSQL baze
 from auth import *
 
-conn_string = "host = '{0}' dbname = '{1}' user = '{2}' password = '{3}'".format(host, dbname, user, password)
+import os
+
+DB_PORT = os.environ.get('POSTGRES_PORT', 5432)
+
+conn_string = "host = '{0}' dbname = '{1}' user = '{2}' password = '{3}' port='{4}'".format(host, dbname, user, password,DB_PORT)
 
 # Ostale potrebne knjižnjice
 #import pandas as pd
