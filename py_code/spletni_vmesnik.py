@@ -666,22 +666,22 @@ def registracija_post():
     geslo2 = request.forms.getunicode('geslo2')
     if emso is None or uporabnisko_ime is None or geslo is None or geslo2 is None:
         nastaviSporocilo('Registracija ni možna! Prosim, nastavi vsa obvezna polja.') 
-        redirect(url('registracija'))
+        redirect(url('registracija_get'))
         return
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()    
         uporabnik = Clan.get_clan(emso)
         if uporabnik is None:
             nastaviSporocilo('Registracija ni možna! Člana s to EMŠO ni v bazi.') 
-            redirect(url('registracija'))
+            redirect(url('registracija_get'))
             return
         if len(geslo) < 4:
             nastaviSporocilo('Geslo mora imeti vsaj 4 znake.') 
-            redirect(url('registracija'))
+            redirect(url('registracija_get'))
             return
         if geslo != geslo2:
             nastaviSporocilo('Gesli se ne ujemata.') 
-            redirect(url('registracija'))
+            redirect(url('registracija_get'))
             return
         #try:
         #    zgostitev = hashGesla(geslo)
@@ -692,12 +692,12 @@ def registracija_post():
         #    redirect('/registracija')
         if Clan.validate_username(uporabnisko_ime) == False:
             nastaviSporocilo("To uporabniško ime je že zasedeno.")
-            redirect(url('registracija'))
+            redirect(url('registracija_get'))
             return
         zgostitev = hashGesla(geslo)
         cur.execute(f"UPDATE clan SET uporabnisko_ime = %s, geslo = %s WHERE emso = %s", (uporabnisko_ime, zgostitev, int(emso)))
         response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
-    redirect(url('/'))
+    redirect(url('osnovna_stran'))
 
 
 @get('/prijava')
@@ -711,7 +711,7 @@ def prijava_post():
     geslo = request.forms.geslo
     if uporabnisko_ime is None or geslo is None:
         nastaviSporocilo('Uporabniško ime in geslo morata biti neprazna') 
-        redirect(url('prijava'))
+        redirect(url('prijava_get'))
         return
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()    
@@ -724,14 +724,14 @@ def prijava_post():
             hashBaza = None
     if hashBaza is None:
         nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-        redirect(url('prijava'))
+        redirect(url('prijava_get'))
         return
     if hashGesla(geslo) != hashBaza:
         nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-        redirect(url('prijava'))
+        redirect(url('prijava_get'))
         return
     response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
-    redirect(url('/'))
+    redirect(url('osnovna_stran'))
     
 @get('/odjava')
 def odjava_get():
