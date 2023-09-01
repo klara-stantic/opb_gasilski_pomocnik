@@ -5,7 +5,7 @@
     width: 100%;
   }
 </style>
-<form action="{{url('/')}}">
+<form action="{{url('osnovna_stran')}}">
   <td>
       <div class="buttons">
           <button class="button is-info">Nazaj</button>
@@ -44,7 +44,7 @@
                     </form>
                   </th>
                   <th>
-                    <form method="POST" action="{{url('preusmeritev_popravi_vozilo')}}">
+                    <form method="POST" action="{{url('popravi_vozilo')}}">
                       <input type="hidden" name="reg" value="{{registerska_st}}">
                       <button class="button is-info">Popravi podatke</button>
                     </form>
@@ -53,7 +53,7 @@
           </tbody>   
       <table>
         <tr>
-          <form action="{{url('dodaj_vozilo')}}">
+          <form action="{{url('novo_vozilo')}}">
             <td>
                 <div class="buttons">
                     <button class="button is-info">DODAJ VOZILO</button>

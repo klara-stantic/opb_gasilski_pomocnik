@@ -10,7 +10,7 @@
 <table>
 
     <td>
-        <form action="{{url('/')}}">
+        <form action="{{url('osnovna_stran')}}">
             <td>
                 <div class="buttons">
                     <button class="button is-info">Nazaj</button>
@@ -18,7 +18,7 @@
             </td>
           </form>
     </td>
-        <form action="{{url('dodaj_int')}}">
+        <form action="{{url('dodaj_intervencijo')}}">
             <td>
                 <div class="buttons">
                     <button class="button is-info">Dodaj intervencijo</button>
@@ -37,7 +37,7 @@
 <article class="message is-info">
     <div class="message-header">
       <p>{{tip_int[tip - 1][1]}} dne: {{datum}} </p>
-      <form method="POST" action="{{url('odstrani_int')}}">
+      <form method="POST" action="{{url(odstrani_intervencijo')}}">
         <input type="hidden" name="id" value="{{id}}" >
         <button class="delete" aria-label="delete"></button>
       </form>
@@ -47,7 +47,7 @@
         <ul><strong>Opis:</strong> {{opis}}</ul> 
         
     </div>
-    <form action="{{url('prikaz_int')}}" method="POST">
+    <form action="{{url('prikaz_intervencije')}}" method="POST">
       <input type="hidden" name="id" value="{{id}}" >
       <div class="buttons">
           <button class="button is-primary">Pregled</button>

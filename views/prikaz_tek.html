@@ -3,7 +3,7 @@
 
 <table>
     <td>
-        <form action="{{url('/')}}">
+        <form action="{{url('osnovna_stran')}}">
             <td>
                 <div class="buttons">
                     <button class="button is-info">Nazaj</button>
@@ -28,7 +28,7 @@
 &nbsp
 <h1 class="title is-4">TEKMOVANJA</h1>
 %for id,lokacija,tip,datum in tek:
-<form method="POST" action="{{url('odstrani_tek')}}">
+<form method="POST" action="{{url('odstrani_tekmovanje')}}">
     <div class="notification is-info">
         <button class="delete"></button>
         <input type="hidden" name="id_tek" value="{{id}}">
