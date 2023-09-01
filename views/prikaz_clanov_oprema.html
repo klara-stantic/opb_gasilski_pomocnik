@@ -4,7 +4,7 @@
 
   <h4 class="title is-4">OPREMA ČLANOV</h4>
 
-  <form action="/">
+  <form action="{{url('/')}}">
     <td>
         <div class="buttons">
             <button class="button is-info">Nazaj</button>
@@ -26,7 +26,7 @@
                     <th>{{ime}}</th>
                   <th>
                     
-                    <a href="/preusmeritev_pregled_opreme/{{emso}}/" class="button is-info" name="id_kategorije" value="{{emso}}">
+                    <a href="{{url('preusmeritev_pregled_opreme',emso=emso)}}" class="button is-info" name="id_kategorije" value="{{emso}}">
                         Poglej opremo </a>
                     
                   </th>

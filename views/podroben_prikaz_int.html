@@ -10,7 +10,7 @@
   <table>
   
       <td>
-          <form action="/intervencije/">
+          <form action="{{url('intervencije')}}">
               <td>
                   <div class="buttons">
                       <button class="button is-info">Nazaj</button>
@@ -20,7 +20,7 @@
       </td>
   </table>
   &nbsp
-  <form method="POST" action="/dodaj_int/">
+  <form method="POST" action="{{url('dodaj_int')}}">
     <div class="field">
         <label class="label">Tip intervencije</label>
         <div class="control">

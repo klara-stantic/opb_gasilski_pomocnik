@@ -3,7 +3,7 @@
 
 <table>
     <td>
-        <form action="/">
+        <form action="{{url('/')}}">
             <td>
                 <div class="buttons">
                     <button class="button is-info">Nazaj</button>
@@ -14,7 +14,7 @@
     <td>
         &nbsp
     </td>
-        <form action="/dodaj_vajo/">
+        <form action="{{url('dodaj_vajo')}}">
             <td>
                 <div class="buttons">
                     <button class="button is-info">Dodaj vajo</button>
@@ -28,7 +28,7 @@
 &nbsp
 <h1 class="title is-4">VAJE</h1>
 %for id,obvezna,tip_vaje,datum,ime,priimek in vaje:
-    <form method="POST" action="/odstrani_vajo/">
+    <form method="POST" action="{{url('odstrani_vajo')}}">
         %if obvezna:
             <div class="notification is-info">
                 <button class="delete"></button>
