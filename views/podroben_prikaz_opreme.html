@@ -11,7 +11,7 @@
   <table>
 
     <td>
-        <form action="/oprema/">
+        <form action="{{url('oprema')}}">
             <td>
                 <div class="buttons">
                     <button class="button is-info">Nazaj</button>
@@ -36,7 +36,7 @@
         <tr>
             <th>{{tip_opreme}}</th>
             <th>
-                <form method="POST" action="/odstrani_opremo/">
+                <form method="POST" action="{{url('odstrani_opremo')}}">
                     <input type="hidden" id="id" name="id_opreme" value="{{id}}">
                     <input type="hidden" name="emso" value="{{emso}}">
                     <button class="button is-info">odstrani opremo</button>
@@ -48,7 +48,7 @@
 
 &nbsp
 
-<form method="POST" action="/dodaj_opremo/">
+<form method="POST" action="{{url('dodaj_opremo')}}">
     <div class="field">
         <label class="label">Dodaj opremo</label>
         <div class="control has-icons-left">

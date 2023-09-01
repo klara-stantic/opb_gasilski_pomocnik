@@ -1,6 +1,6 @@
 % setdefault('napaka', '')
 %rebase('ogrodje.html',napaka=napaka)
-<form action="/tekmovanja/">
+<form action="{{url('tekmovanja')}}">
     <td>
         <div class="buttons">
             <button class="button is-info">Nazaj</button>
@@ -8,7 +8,7 @@
     </td>
   </form>
 &nbsp
-<form method="POST" action="/dodaj_tekekmovanje/">
+<form method="POST" action="{{url('dodaj_tekekmovanje')}}">
   <label class="label">Tip tekmovanja</label>
     <div class="select">
         <select name="tip_tek">

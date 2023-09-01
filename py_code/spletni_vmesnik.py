@@ -1,5 +1,5 @@
 # Struktura spletne aplikacije
-from bottle import *
+from bottleext import *
 from auth import *
 from model import *
 from datetime import date 
@@ -55,7 +55,7 @@ def preveriUporabnika():
                 uporabnik = None
             if uporabnik: 
                 return uporabnik
-    redirect('/prijava')
+    redirect(url('prijava_get'))
 
 @route("/static/<filename:path>")
 def static(filename):
@@ -93,7 +93,7 @@ def osnovna_stran():
 # ČLANI
 ############################################################################### 
 
-@get('/clani/') 
+@get('/clani') 
 def prikaz_clanov():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -109,7 +109,7 @@ def prikaz_clanov():
             c = cur.fetchall()
     return template('prikaz_clanov.html',napaka=napaka,clani=clani,fun = fun, c=c)
 
-@get('/dodaj_clana/')
+@get('/dodaj_clana')
 def nov_clan():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -123,7 +123,7 @@ def nov_clan():
             cin = cur.fetchall()
     return template('n_clan',napaka=napaka,funkcije = funkcija, cin=cin)
     
-@post('/dodaj_clana/')
+@post('/dodaj_clana')
 def nov_clan_post():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -145,9 +145,9 @@ def nov_clan_post():
         nov.dodaj_clana()
     except:
           nastaviSporocilo("ta emšo že obstaja")
-    redirect('/clani/')
+    redirect(url('prikaz_clanov'))
 
-@post('/odstrani_clana/')
+@post('/odstrani_clana')
 def odstrani_clana():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -157,9 +157,9 @@ def odstrani_clana():
         Clan.spremeni_aktivnost(int(emso))
     except:
          nastaviSporocilo("Izbris člana ni uspel")
-    redirect('/clani/')
+    redirect(url('prikaz_clanov'))
 
-@post('/preusmeritev_popravi_clan/')
+@post('/preusmeritev_popravi_clan')
 def popravi_clana():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -176,7 +176,7 @@ def popravi_clana():
         c = cur.fetchall()
     return template('popravi_clana.html',napaka=napaka,clan=clan,fun=fun,c=c)
 
-@post('/popravi_clana/')
+@post('/popravi_clana')
 def popravi_clana_dokonco():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -193,18 +193,18 @@ def popravi_clana_dokonco():
             funkcija_id = cur.fetchall()
             cin_id = cur.execute(f"""SELECT id_cin FROM cin WHERE cin = %s""",[cin])
             cin_id = cur.fetchall()
-    #try:
-    Clan.popravi_clana(int(emso),ime,priimek,funkcija_id[0][0],cin_id[0][0],zd)
-    #except:
-         #nastaviSporocilo("popravljanje podatkov ni uspelo")
-    redirect('/clani/')
+    try:
+        Clan.popravi_clana(int(emso),ime,priimek,funkcija_id[0][0],cin_id[0][0],zd)
+    except:
+         nastaviSporocilo("popravljanje podatkov ni uspelo")
+    redirect(url('prikaz_clanov'))
     
 ###############################################################################
 # VOZILA
 ###############################################################################    
 
 
-@get('/vozila/') 
+@get('/vozila') 
 def prikaz_vozil():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -220,7 +220,7 @@ def prikaz_vozil():
             izpit = cur.fetchall()
     return template('prikaz_vozil.html',napaka = napaka,vozila=vozila,tip=tip,izpit=izpit)
 
-@get('/dodaj_vozilo/')
+@get('/dodaj_vozilo')
 def novo_vozilo():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -234,7 +234,7 @@ def novo_vozilo():
             izpit = cur.fetchall()
     return template('novo_vozilo.html',napaka=napaka,tip_v=tip_v,izpit=izpit)
 
-@post('/dodaj_vozilo/')
+@post('/dodaj_vozilo')
 def novo_vozilo_post():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -256,9 +256,9 @@ def novo_vozilo_post():
         nov.dodaj_vozilo()
     except:
         nastaviSporocilo("Ta registerska številka že obstaja")
-    redirect('/vozila/')
+    redirect(url('vozila'))
 
-@post('/odstrani_vozilo/')
+@post('/odstrani_vozilo')
 def odstrani_vozilo():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -268,9 +268,9 @@ def odstrani_vozilo():
         Vozilo.spremeni_aktivnost(reg)
     except:
          nastaviSporocilo("izbris vozila ni uspel")
-    redirect('/vozila/')
+    redirect(url('vozila'))
 
-@post('/preusmeritev_popravi_vozilo/')
+@post('/preusmeritev_popravi_vozilo')
 def popravi_vozilo():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -287,7 +287,7 @@ def popravi_vozilo():
         izpit = cur.fetchall()
     return template('popravi_vozilo.html',napaka=napaka,vozilo=vozilo,tip_v=tip_v,izpit=izpit)
 
-@post('/popravi_vozilo/')
+@post('/popravi_vozilo')
 def popravi_clana_dokonco():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -308,13 +308,13 @@ def popravi_clana_dokonco():
         Vozilo.popravi_vozilo(reg,tip_id[0][0],izpit_id[0][0],int(potniki),znamka,tehnicni)
     except:
         nastaviSporocilo("Popravljanje podatkov ni uspelo")
-    redirect('/vozila/')
+    redirect(url('vozila'))
 
 ###############################################################################
 # INTERVENCIJE
 ###############################################################################
 
-@get("/intervencije/")
+@get("/intervencije")
 def intervencije():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -328,7 +328,7 @@ def intervencije():
         tip_int = cur.fetchall()
     return template("prikaz_int.html",napaka=napaka,inte=inte,tip_int=tip_int)
 
-@get("/dodaj_int/")
+@get("/dodaj_int")
 def dodaj_intervencijo():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -340,7 +340,7 @@ def dodaj_intervencijo():
         tip_int = cur.fetchall()
     return template('nova_intrvencija.html',tip_int=tip_int, napaka=napaka)
 
-@post("/dodaj_int/")
+@post("/dodaj_int")
 def post_dodaj_int():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -359,11 +359,11 @@ def post_dodaj_int():
 
     except:
         nastaviSporocilo("Dodajanje intervencije ni uspelo")
-        redirect('/intervencije/')
+        redirect(url('intervencije'))
 
-    redirect('/dodaj_clane_na_int/')
+    redirect(url('dodaj_clane_na_int'))
 
-@get('/dodaj_clane_na_int/')
+@get('/dodaj_clane_na_int')
 def dodaj_clane_int():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -381,7 +381,7 @@ def dodaj_clane_int():
         tip_v = cur.fetchall()
     return template('dodaj_clane_int.html',napaka=napaka,clani=clani, id_int=id_int,vozila=vozila,tip_v=tip_v)
 
-@post('/dodaj_clane_na_int/')
+@post('/dodaj_clane_na_int')
 def post():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -414,10 +414,10 @@ def post():
     except:
          nastaviSporocilo("dodajane članov in vozil ni dokočno uspelo, izbriši intervencijo in jo ustvari na novo")
 
-    redirect("/intervencije/")
+    redirect(url('intervencije'))
 
 
-@route("/prikaz_int/", method='POST')
+@route("/prikaz_int", method='POST')
 def prikaz_intervencije():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -439,7 +439,7 @@ def prikaz_intervencije():
     
     return template('podroben_prikaz_int.html',napaka=napaka,int=int,tip_v=tip_v,tip_int=tip_int,clani_na_int=clani_na_int,vozila_na_int=vozila_na_int)
 
-@route('/odstrani_int/', method='POST')
+@route('/odstrani_int', method='POST')
 def odstrani_intervencijo():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -449,13 +449,13 @@ def odstrani_intervencijo():
         Intervencija.odstrani_intervencijo(int(id))
     except:
         nastaviSporocilo("Izbris intervencije ni uspel")
-    redirect('/intervencije/')
+    redirect(url('intervencije'))
       
 ###############################################################################
 # TEKMOVANJA
 ###############################################################################
 
-@get("/tekmovanja/")
+@get("/tekmovanja")
 def tekmovanje():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -469,7 +469,7 @@ def tekmovanje():
             tip_tek = cur.fetchall()
     return template("prikaz_tek.html",napaka=napaka,tek=tek, tip_tek=tip_tek)
 
-@get('/dodaj_tekmovanje/')
+@get('/dodaj_tekmovanje')
 def dodaj_tekmovanje():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -481,7 +481,7 @@ def dodaj_tekmovanje():
         tip_tekmo = cur.fetchall()
     return template('novo_tekmovanje.html',napaka=napaka,tip_tekmo=tip_tekmo)
 
-@route('/dodaj_tekekmovanje/', method='POST')
+@route('/dodaj_tekekmovanje', method='POST')
 def post_dodaj_tekmovanje():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -498,9 +498,9 @@ def post_dodaj_tekmovanje():
         nov.dodaj_tekmovanje()
     except:
         nastaviSporocilo("Dodajane tekmovanja ni uspelo")
-    redirect('/tekmovanja/')
+    redirect(url('tekmovanja'))
 
-@route('/odstrani_tek/', method='POST')
+@route('/odstrani_tek', method='POST')
 def odstrani_tekmovanje():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -510,13 +510,13 @@ def odstrani_tekmovanje():
         Tekomvanje.odstrani_tekmovanje(int(id))
     except:
         nastaviSporocilo("Izbris tekmovanja ni uspel")
-    redirect('/tekmovanja/')
+    redirect(url('tekmovanja'))
 
 ###############################################################################
 # VAJE
 ###############################################################################
 
-@get("/vaje/")
+@get("/vaje")
 def vaje():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -530,7 +530,7 @@ def vaje():
             tip= cur.fetchall()
     return template("prikaz_vaj.html",napaka=napaka,vaje=vaje, tip=tip)   
 
-@get("/dodaj_vajo/")
+@get("/dodaj_vajo")
 def dodaj_vajo():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -546,7 +546,7 @@ def dodaj_vajo():
         vaje = cur.fetchall()
     return template('nova_vaja.html',napaka=napaka,tip_vaje=tip_vaje,vodja=vodaja,vaje=vaje) 
 
-@route('/dodaj_vajo/', method='POST')
+@route('/dodaj_vajo', method='POST')
 def post_dodaj_vajo():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -568,9 +568,9 @@ def post_dodaj_vajo():
         nov.dodaj_vajo()
     except:
          nastaviSporocilo("Dodajane vaje ni uspelo")
-    redirect('/vaje/')
+    redirect(url('vaje'))
 
-@route('/odstrani_vajo/', method='POST')
+@route('/odstrani_vajo', method='POST')
 def odstrani_vajo():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -580,13 +580,13 @@ def odstrani_vajo():
         Vaja.odstrani_vajo(int(id))
     except:
         nastaviSporocilo("Izbris vaje ni uspel")
-    redirect("/vaje/")
+    redirect(url('vaje'))
 
 ###############################################################################
 # OPREMA
 ###############################################################################
 
-@get("/oprema/")
+@get("/oprema")
 def oprema():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -598,7 +598,7 @@ def oprema():
             clani = cur.fetchall()
     return template("prikaz_clanov_oprema.html",napaka=napaka,clani=clani)
 
-@get("/preusmeritev_pregled_opreme/<emso_za_prikaz>/")
+@get("/preusmeritev_pregled_opreme/<emso_za_prikaz>")
 def prikaz_opreme(emso_za_prikaz):
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -614,7 +614,7 @@ def prikaz_opreme(emso_za_prikaz):
     return template('podroben_prikaz_opreme.html',napaka=napaka,oprema_clana=oprema_clana,clan=clan)
 
 
-@route("/dodaj_opremo/", method='POST')
+@route("/dodaj_opremo", method='POST')
 def dodaj_opremo_clanu():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -626,10 +626,10 @@ def dodaj_opremo_clanu():
         nov.dodaj_opremo()
     except:
          nastaviSporocilo("Dodajanje opreme ni uspelo")
-    redirect(f'/preusmeritev_pregled_opreme/{emso_za_dodajo}/')
+    redirect(url(f'preusmeritev_pregled_opreme',emso_za_dodajo=emso_za_dodajo))
 
 
-@route("/odstrani_opremo/", method='POST')
+@route("/odstrani_opremo", method='POST')
 def odstrani_opremo():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
@@ -640,7 +640,7 @@ def odstrani_opremo():
         Oprema.odstrani_opremo(int(id_opreme))
     except:
         nastaviSporocilo("Odstranitev opreme ni uspelo")
-    redirect(f"/preusmeritev_pregled_opreme/{emso}/")
+    redirect(url(f"/preusmeritev_pregled_opreme/{emso}"))
 
 
 ###############################################################################
@@ -665,22 +665,22 @@ def registracija_post():
     geslo2 = request.forms.getunicode('geslo2')
     if emso is None or uporabnisko_ime is None or geslo is None or geslo2 is None:
         nastaviSporocilo('Registracija ni možna! Prosim, nastavi vsa obvezna polja.') 
-        redirect('/registracija')
+        redirect(url('registracija'))
         return
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()    
         uporabnik = Clan.get_clan(emso)
         if uporabnik is None:
             nastaviSporocilo('Registracija ni možna! Člana s to EMŠO ni v bazi.') 
-            redirect('/registracija')
+            redirect(url('registracija'))
             return
         if len(geslo) < 4:
             nastaviSporocilo('Geslo mora imeti vsaj 4 znake.') 
-            redirect('/registracija')
+            redirect(url('registracija'))
             return
         if geslo != geslo2:
             nastaviSporocilo('Gesli se ne ujemata.') 
-            redirect('/registracija')
+            redirect(url('registracija'))
             return
         #try:
         #    zgostitev = hashGesla(geslo)
@@ -691,12 +691,12 @@ def registracija_post():
         #    redirect('/registracija')
         if Clan.validate_username(uporabnisko_ime) == False:
             nastaviSporocilo("To uporabniško ime je že zasedeno.")
-            redirect('/registracija')
+            redirect(url('registracija'))
             return
         zgostitev = hashGesla(geslo)
         cur.execute(f"UPDATE clan SET uporabnisko_ime = %s, geslo = %s WHERE emso = %s", (uporabnisko_ime, zgostitev, int(emso)))
         response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
-    redirect('/')
+    redirect(url('/'))
 
 
 @get('/prijava')
@@ -710,7 +710,7 @@ def prijava_post():
     geslo = request.forms.geslo
     if uporabnisko_ime is None or geslo is None:
         nastaviSporocilo('Uporabniško ime in geslo morata biti neprazna') 
-        redirect('/prijava')
+        redirect(url('prijava'))
         return
     with psycopg2.connect(conn_string) as baza:
         cur = baza.cursor()    
@@ -723,19 +723,19 @@ def prijava_post():
             hashBaza = None
     if hashBaza is None:
         nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-        redirect('/prijava')
+        redirect(url('prijava'))
         return
     if hashGesla(geslo) != hashBaza:
         nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-        redirect('/prijava')
+        redirect(url('prijava'))
         return
     response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
-    redirect('/')
+    redirect(url('/'))
     
 @get('/odjava')
 def odjava_get():
     response.delete_cookie('uporabnisko_ime')
-    redirect('/prijava')
+    redirect(url('prijava'))
 
 
 ###################################################################################33

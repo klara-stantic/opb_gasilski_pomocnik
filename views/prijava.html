@@ -34,7 +34,7 @@
 
         <h3 class="title is-3">Prijava</h3>
 &nbsp
-<form action="/registracija">
+<form action="{{url('registracija_get')}}">
   <td>
       <div class="control has-icons-left">
           <div class="buttons">
@@ -45,7 +45,7 @@
 </form>
 &nbsp
 
-  <form class="box" action="/prijava" method="post" autocomplete="off">
+  <form class="box" action="{{url('prijava_post')}}" method="post" autocomplete="off">
     <div class="field">
       <label class="label">Uporabniško ime</label>
       <div class="control">
