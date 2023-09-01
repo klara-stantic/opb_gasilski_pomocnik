@@ -362,7 +362,7 @@ def post_dodaj_int():
         nastaviSporocilo("Dodajanje intervencije ni uspelo")
         redirect(url('intervencije'))
 
-    redirect(url('dodaj_clane_na_int'))
+    redirect(url('dodaj_clane_int'))
 
 @get('/dodaj_clane_na_int')
 def dodaj_clane_int():
@@ -383,7 +383,7 @@ def dodaj_clane_int():
     return template('dodaj_clane_int.html',napaka=napaka,clani=clani, id_int=id_int,vozila=vozila,tip_v=tip_v)
 
 @post('/dodaj_clane_na_int')
-def post():
+def dodaj_clane_int_post():
     uporabnik = preveriUporabnika()
     if uporabnik is None: 
         return
