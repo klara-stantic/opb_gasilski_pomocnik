@@ -17,7 +17,7 @@ RELOADER = os.environ.get('BOTTLE_RELOADER', True)
 DB_PORT = os.environ.get('POSTGRES_PORT', 5432)
 
 # Database dostop
-conn_string = "host = '{0}' dbname = '{1}' user = '{2}' password = '{3}'".format(host, dbname, user, password)
+conn_string = "host = '{0}' dbname = '{1}' user = '{2}' password = '{3}' port = '{4}'".format(host, dbname, user, password, DB_PORT)
 baza = psycopg2.connect(conn_string)
 cur = baza.cursor()
 # cur.execute("PRAGMA foreign_keys = ON;") nevem kaj ta rec dela
